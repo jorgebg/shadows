@@ -1,7 +1,7 @@
 <script lang="ts">
   import Menu from "./lib/Menu.svelte";
   import Game from "./lib/Game.svelte";
-  import { currentView } from "./lib/stores";
+  import { View, currentView } from "./lib/stores";
 </script>
 
 <main>
@@ -13,10 +13,10 @@
     />
   </h1>
   <div>
-    {#if $currentView == "Menu"}
+    {#if $currentView == View.Menu}
       <Menu />
     {/if}
-    {#if $currentView == "Game"}
+    {#if $currentView == View.Game}
       <Game />
     {/if}
   </div>

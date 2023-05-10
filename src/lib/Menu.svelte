@@ -1,9 +1,20 @@
 <script lang="ts">
-    import { currentView } from "./stores";
+    import { View, currentView, savedGame } from "./stores";
+
+    function continueGame() {
+        currentView.set(View.Game);
+    }
+
+    function newGame() {
+        savedGame.set({ turn: 0 });
+        currentView.set(View.Game);
+    }
 </script>
 
 <h2>Where The Shadows Lie</h2>
 <div>
-    <button on:click={() => currentView.set("Game")}> Continue </button>
-    <button on:click={() => currentView.set("Game")}> New Game </button>
+    {#if $savedGame}
+        <button on:click={continueGame}> Continue </button>
+    {/if}
+    <button on:click={newGame}> New Game </button>
 </div>

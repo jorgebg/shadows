@@ -1,12 +1,15 @@
 <script lang="ts">
-  import { currentView } from "./stores";
+  import { View, currentView, savedGame } from "./stores";
 
-  let gameState = { turn: 0 };
   const nextTurn = () => {
-    gameState.turn += 1;
+    savedGame.update((G) => {
+      console.log(G);
+      G.turn += 1;
+      return G;
+    });
   };
 </script>
 
-<p>Turn is {gameState.turn}</p>
+<p>Turn is {$savedGame.turn}</p>
 <button on:click={nextTurn}> Next Turn </button>
-<button on:click={() => currentView.set("Menu")}> Exit </button>
+<button on:click={() => currentView.set(View.Menu)}> Exit </button>
