@@ -9,6 +9,11 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+env:
+  # Vite config env variables
+  # https://vitejs.dev/guide/env-and-mode.html#env-variables
+  BASE_URL: '/${{ github.event.repository.name }}/'
+
 # Sets the GITHUB_TOKEN permissions to allow deployment to GitHub Pages
 permissions:
   contents: read
