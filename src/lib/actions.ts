@@ -29,7 +29,7 @@ export abstract class BaseAction {
 }
 
 class Increment extends BaseAction {
-    commit({ G, ctx }, n: number) {
+    commit({ G, ctx }, n = 1) {
         G.count += n
     }
 }
