@@ -4,7 +4,7 @@
   import { View, currentView } from "./lib/stores";
 </script>
 
-<main>
+<header>
   <h1>
     <img
       src="warlord-helmet.svg"
@@ -12,6 +12,8 @@
       title="Where The Shadows Lie"
     />
   </h1>
+</header>
+<main>
   <div>
     {#if $currentView == View.Menu}
       <Menu />
@@ -21,3 +23,11 @@
     {/if}
   </div>
 </main>
+
+<footer>
+  <p>
+    Source: <a href="https://github.com/jorgebg/shadows"
+      >github.com/jorgebg/shadows</a
+    >
+  </p>
+</footer>

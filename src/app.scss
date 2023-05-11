@@ -1,4 +1,4 @@
-main {
+header {
     text-align: center;
 
     h1 {
@@ -6,9 +6,22 @@ main {
             max-height: 1em;
         }
     }
+}
+
+main {
+    text-align: center;
+
 
     button {
         padding: 0.5em 1em;
         cursor: pointer;
     }
+}
+
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
 }
