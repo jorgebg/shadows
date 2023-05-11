@@ -21,12 +21,3 @@
     {/if}
   </div>
 </main>
-
-<style>
-  main {
-    text-align: center;
-  }
-  h1 img {
-    max-height: 1em;
-  }
-</style>
