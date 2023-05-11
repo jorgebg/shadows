@@ -2,19 +2,10 @@
   import { onDestroy } from "svelte";
   import { Client } from "boardgame.io/client";
   import { View, currentView } from "./stores";
-  import { loadGame, saveGame } from "./save";
+  import { saveGame } from "./save";
+  import { Game } from "./game";
 
-  let client = Client({
-    game: {
-      setup: () => loadGame(),
-
-      moves: {
-        increment: ({ G, playerID }) => {
-          G.count += 1;
-        },
-      },
-    },
-  });
+  let client = Client({ game: Game });
   client.start();
 
   let state = client.getState();
@@ -31,5 +22,8 @@
 </script>
 
 <p>Count is {G.count}</p>
-<button on:click={client.moves.increment}> Increment </button>
+<p>
+  {#if ctx.gameover}Game over{/if}
+</p>
+<button on:click={() => client.moves.Increment(1)}> Increment </button>
 <button on:click={() => currentView.set(View.Menu)}> Exit </button>

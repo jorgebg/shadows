@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { initialGState } from "./game";
     import { loadGame, saveGame } from "./save";
     import { View, currentView } from "./stores";
 
@@ -9,7 +10,7 @@
     $: savedGame = loadGame();
 
     function newGame() {
-        saveGame({ count: 0 });
+        saveGame(initialGState());
         currentView.set(View.Game);
     }
 </script>
@@ -17,7 +18,13 @@
 <h2>Where The Shadows Lie</h2>
 <div>
     {#if savedGame}
-        <button on:click={continueGame}> Continue </button>
+        <p><button on:click={continueGame}> Continue </button></p>
     {/if}
-    <button on:click={newGame}> New Game </button>
+    <p><button on:click={newGame}> New Game </button></p>
 </div>
+
+<style>
+    button {
+        width: 10em;
+    }
+</style>
