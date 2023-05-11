@@ -16,3 +16,7 @@ export function saveGame(state) {
     localStorage.setItem(savedGameStorageKey, serialized);
 
 }
+
+export function deleteGame() {
+    localStorage.removeItem(savedGameStorageKey)
+}

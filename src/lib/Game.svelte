@@ -2,8 +2,10 @@
   import { onDestroy } from "svelte";
   import { Client } from "boardgame.io/client";
   import { View, currentView } from "./stores";
-  import { saveGame } from "./save";
+  import { saveGame, deleteGame } from "./save";
   import { Game } from "./game";
+  import Actions from "./Actions.svelte";
+  import { getAvailableActionsTree } from "./actions";
 
   let client = Client({ game: Game });
   client.start();
@@ -15,6 +17,9 @@
   const update = (newState) => {
     state = newState;
     saveGame(newState.G);
+    if (newState.ctx.gameover) {
+      deleteGame();
+    }
   };
 
   client.subscribe((state) => update(state));
@@ -25,5 +30,6 @@
 <p>
   {#if ctx.gameover}Game over{/if}
 </p>
+<Actions actions={getAvailableActionsTree(client)} />
 <button on:click={() => client.moves.Increment(1)}> Increment </button>
 <button on:click={() => currentView.set(View.Menu)}> Exit </button>
