@@ -1,33 +1,24 @@
 <script lang="ts">
-  import Menu from "./lib/Menu.svelte";
-  import Game from "./lib/Game.svelte";
-  import { View, currentView } from "./lib/stores";
+  import { getGameAppConfig } from "@domain/config";
+  import GameApp from "@engine/components/GameApp.svelte";
+  import "./app.scss";
 </script>
 
-<header>
-  <h1>
-    <img
-      src="warlord-helmet.svg"
-      alt="Where The Shadows Lie"
-      title="Where The Shadows Lie"
-    />
-  </h1>
-</header>
-<main>
-  <div>
-    {#if $currentView == View.Menu}
-      <Menu />
-    {/if}
-    {#if $currentView == View.Game}
-      <Game />
-    {/if}
-  </div>
-</main>
+<svelte:head>
+  <!-- Hint where we get fonts from. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-<footer>
-  <p>
-    Source: <a href="https://github.com/jorgebg/shadows"
-      >github.com/jorgebg/shadows</a
-    >
-  </p>
-</footer>
+  <!-- Material Symbols, Roboto, and Roboto Mono fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:FILL@1"
+    rel="stylesheet"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital@0;1&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+    rel="stylesheet"
+  />
+</svelte:head>
+
+<GameApp config={getGameAppConfig()} />
+<!-- <GameApp config={getExampleConfig()} /> -->
