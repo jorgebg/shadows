@@ -8,12 +8,20 @@ export interface Option<GS = any> {
   id?: string;
   title: string;
   description?: string;
+  hidden?: boolean;
   help?: string;
   header?: string;
   move?: typeof Move<GS>;
   args?: Move<GS>["args"];
   component?: typeof SvelteComponent;
-  icon?: { name: string; color?: string } | string | boolean;
+  icon?:
+    | {
+        name: string;
+        color?: string;
+        svg?: any;
+      }
+    | string
+    | boolean;
   disabled?: boolean;
   apply?: (client: _ClientImpl) => void;
   back?: number;

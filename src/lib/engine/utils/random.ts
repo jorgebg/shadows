@@ -4,6 +4,13 @@ export function randomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+export function rollD6(): number {
+  return randomInt(1, 6);
+}
+export function rollD3(): number {
+  return randomInt(1, 3);
+}
+
 export function randomChoice<T>(list: T[]): T {
   return list[randomInt(0, list.length - 1)];
 }

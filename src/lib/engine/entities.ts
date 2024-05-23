@@ -5,7 +5,10 @@ const uid = new ShortUniqueId();
 export interface Entity {
   id: string;
   name: string;
-  icon: { name: string; color?: string | number } | string | number;
+  icon:
+    | { name: string; color?: string | number; svg?: string }
+    | string
+    | number;
 }
 
 export function entity<T extends Entity>(attrs: Partial<T> | string): T {

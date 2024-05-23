@@ -1,23 +1,14 @@
-import { entity, find } from "@engine/entities";
+import { find } from "@engine/entities";
 import { confirm, type Option } from "@engine/options";
-import { randomChoice, randomInt } from "@engine/utils/random";
-import { titleize } from "@engine/utils/string";
+import { initials } from "@engine/utils/string";
 import type { Ctx, Game } from "boardgame.io";
-import { human } from "fantastical";
+import BandScreen from "./components/BandScreen.svelte";
 import ItemsScreen from "./components/ItemsScreen.svelte";
 import MapScreen from "./components/MapScreen.svelte";
-import RegionScreen from "./components/RegionScreen.svelte";
-import TeamScreen from "./components/TeamScreen.svelte";
-import {
-  FACES,
-  FACE_COLORS,
-  Race,
-  power,
-  type Character,
-} from "./entities/character";
+import PlanScreen from "./components/PlanScreen.svelte";
+import { power } from "./entities/character";
 import { EquipmentSlotList, equipped } from "./entities/equipment";
-import { type Item } from "./entities/item";
-import { CardinalPointsGrid, region } from "./entities/region";
+import { getRegionIcons, type Region } from "./entities/region";
 import { TaskList } from "./entities/task";
 import { getAllMoves } from "./moves";
 import {
@@ -35,91 +26,16 @@ import { type GameState } from "./state";
 
 export const moves = getAllMoves();
 
-export function setupG(): GameState {
-  const regions = [];
-  for (let x = 0; x < CardinalPointsGrid.length; x++) {
-    const lat = CardinalPointsGrid[x];
-    for (let y = 0; y < lat.length; y++) {
-      regions.push(region({ x, y }));
-    }
-  }
-  const currentRegionID = randomChoice(regions).id;
-
-  const items: Item[] = [];
-  for (let i = 0; i < 3; i++) {
-    items.push(entity<Item>({ name: "Sword", type: "weapon" }));
-  }
-  items.push(entity<Item>({ name: "Axe", type: "weapon" }));
-  items.push(entity<Item>({ name: "Kingsfoil", type: "consumable" }));
-
-  const members: Character[] = [];
-  const faces = new Set<string>(FACES);
-  const colors = new Set<number>(FACE_COLORS);
-  for (let i = 0; i < 3; i++) {
-    const face = randomChoice(Array.from(faces));
-    const color = randomChoice(Array.from(colors));
-    faces.delete(face);
-    colors.delete(color);
-    members.push(
-      entity<Character>({
-        name: human(),
-        icon: { name: face, color },
-        race: Race.Human,
-        str: randomInt(1, 3),
-        dex: randomInt(1, 3),
-        int: randomInt(1, 3),
-        mag: 0,
-        equipment: {
-          primary: items[i].id,
-          secondary: null,
-          shield: null,
-          armor: null,
-          jewel: null,
-        },
-        skills: [],
-      }),
-    );
-  }
-  const assignments = {};
-  const events = [
-    [
-      "A long shadow has fell upon this land. Find where the shadows lie and slay the source.",
-    ],
-  ];
-
-  return { currentRegionID, regions, members, items, assignments, events };
-}
-
 export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
   const { G, ctx } = state;
   let tree = [];
   if (!ctx.gameover) {
     tree = [
       {
-        title: "Map",
-        description: "Map of locations",
-        icon: "map",
-        component: MapScreen,
-        children: G.regions.map((region) => ({
-          id: `region:${region.id}`,
-          title: region.name,
-          description: titleize(region.biome),
-          args: { region },
-          children: [
-            {
-              description: `Move to region ${region.name}`,
-              icon: "hiking",
-              args: { region },
-              move: Travel,
-            },
-          ],
-        })),
-      },
-      {
-        title: "Region",
+        title: "Plan",
         description: "Assign tasks for the day",
-        icon: "signpost",
-        component: RegionScreen,
+        icon: "map",
+        component: PlanScreen,
         children: [
           ...TaskList.map((task) => ({
             title: task.name,
@@ -139,10 +55,31 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         ],
       },
       {
-        title: "Team",
+        title: "Travel",
+        description: "Map of regions",
+        icon: "signpost",
+        component: MapScreen,
+        children: G.regions.map((region) => ({
+          id: `region:${region.id}`,
+          title: region.name,
+          description: getRegionIcons(region),
+          args: { region },
+          hidden: true,
+          children: [
+            {
+              description: `Move to region ${region.name}`,
+              icon: "hiking",
+              args: { region },
+              move: Travel,
+            },
+          ],
+        })),
+      },
+      {
+        title: "Band",
         description: "Manage members",
         icon: "groups",
-        component: TeamScreen,
+        component: BandScreen,
         children: G.members.map((member) => ({
           title: member.name,
           id: member.id,
@@ -262,6 +199,9 @@ export function statusBar(state: { G: GameState; ctx: Ctx }) {
   const { G, ctx } = state;
   return [
     { label: "Day", value: ctx.turn },
-    { label: "Region", value: G.currentRegionID },
+    {
+      label: "Region",
+      value: initials(find<Region>(G.regions, G.currentRegionID).name),
+    },
   ];
 }
