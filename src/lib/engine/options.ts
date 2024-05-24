@@ -1,5 +1,6 @@
 import type { _ClientImpl } from "boardgame.io/dist/types/src/client/client";
 import type { SvelteComponent } from "svelte";
+import type { Icon } from "./icons";
 import type { Move } from "./moves";
 import type { SimpleState } from "./state";
 import { assignDefaults } from "./utils/object";
@@ -14,14 +15,7 @@ export interface Option<GS = any> {
   move?: typeof Move<GS>;
   args?: Move<GS>["args"];
   component?: typeof SvelteComponent;
-  icon?:
-    | {
-        name: string;
-        color?: string;
-        svg?: any;
-      }
-    | string
-    | boolean;
+  icon?: Icon;
   disabled?: boolean;
   apply?: (client: _ClientImpl) => void;
   back?: number;

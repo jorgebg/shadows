@@ -1,0 +1,131 @@
+<script lang="ts">
+  export let hair = "#e27022";
+  export let skin = "#b1cc33";
+</script>
+
+<svg
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:cc="http://creativecommons.org/ns#"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:svg="http://www.w3.org/2000/svg"
+  xmlns="http://www.w3.org/2000/svg"
+  id="emoji"
+  viewBox="0 0 48 48"
+  version="1.1"
+  width="48"
+  height="48"
+>
+  <metadata id="metadata74">
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs id="defs72" />
+  <g id="hair">
+    <path
+      d="m 38.6299,15.388625 a 1.2,1.2 0 0 1 -1.73,1.18 c -1.08,-0.56 -2.98,-1.24 -3.92,-0.35 a 0.3039,0.3039 0 0 1 -0.07,0.05 c -1.52,-2.09 -4.21,-3.79 -8.91,-3.79 a 3.7944,3.7944 0 0 1 3.56,-4.2399997 8.4848,8.4848 0 0 0 4.73,-2.06 5.0935,5.0935 0 0 1 0.65,3.9599997 l 0.49,0.01 c 3.72,0 4.97,3.05 5.2,5.24 z"
+      id="path13"
+      style={`fill:${hair}`}
+    />
+  </g>
+  <g id="skin">
+    <path
+      d="m 24.0021,41.821925 c -15.2776,0 -10.5548,-6.0794 -10.5548,-12.7628 0,-3.5808 -0.3769,-3.4016 -0.3769,-5.9038 0,-2.5022 0.6328,-10.681 10.9317,-10.681 10.2989,0 10.9317,8.1789 10.9317,10.681 0,2.5021 -0.3769,2.323 -0.3769,5.9038 0,6.6834 4.723,12.7628 -10.5548,12.7628 z"
+      id="path15"
+      style={`fill:${skin}`}
+    />
+    <path
+      d="m 34.9338,23.155325 c 2.137,-2.8369 5.3093,-2.0623 8.8,-4.36 -0.548,3.5228 -1.6172,12.3056 -8.9959,12.787 z"
+      id="path17"
+      style={`fill:${skin}`}
+    />
+    <path
+      d="m 13.2621,31.582725 c -7.3787,-0.4814 -8.4479,-9.2642 -8.9959,-12.787 3.49,2.2973 6.6628,1.5227 8.8,4.36 z"
+      id="path19"
+      style={`fill:${skin}`}
+    />
+  </g>
+  <path
+    style="fill:#ffffff"
+    id="path27"
+    d="m 19.055,31.286725 v 0 a 2.6068,2.6068 0 0 1 2.6068,2.6068 v 0.651 H 19.055 Z"
+  />
+  <path
+    style="fill:#ffffff"
+    id="path29"
+    d="m 29.0027,34.544525 h -2.6068 v -0.651 a 2.6068,2.6068 0 0 1 2.6068,-2.6068 v 0 z"
+  />
+  <path
+    style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"
+    id="path36"
+    d="m 32.2869,11.878625 a 5.0267,5.0267 0 0 0 0,-5.7005997 8.4359,8.4359 0 0 1 -4.7251,2.0561 3.7937,3.7937 0 0 0 -3.56,4.2399997"
+  />
+  <path
+    style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"
+    id="path38"
+    d="m 34.9338,23.155325 c 2.137,-2.8369 5.3093,-2.0623 8.8,-4.36 -0.548,3.5228 -1.6172,12.3056 -8.9959,12.787"
+  />
+  <path
+    style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"
+    id="path40"
+    d="m 13.2621,31.582725 c -7.3787,-0.4814 -8.4479,-9.2642 -8.9959,-12.787 3.49,2.2973 6.6628,1.5227 8.8,4.36"
+  />
+  <path
+    style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"
+    id="path42"
+    d="m 24.0021,41.821925 c -15.2776,0 -10.5548,-6.0794 -10.5548,-12.7628 0,-3.5808 -0.3769,-3.4016 -0.3769,-5.9038 0,-2.5022 0.6328,-10.681 10.9317,-10.681 10.2989,0 10.9317,8.1789 10.9317,10.681 0,2.5021 -0.3769,2.323 -0.3769,5.9038 0,6.6834 4.723,12.7628 -10.5548,12.7628 z"
+  />
+  <path
+    style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"
+    id="path48"
+    d="m 26.0389,22.815125 a 5.4257,5.4257 0 0 1 5.0488,-1.2713"
+  />
+  <path
+    style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"
+    id="path50"
+    d="m 16.9699,21.543825 a 5.4256,5.4256 0 0 1 5.0488,1.2713"
+  />
+  <line
+    style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"
+    id="line60"
+    y2="35.060123"
+    y1="32.284225"
+    x2="19.055"
+    x1="19.055"
+  />
+  <line
+    style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"
+    id="line62"
+    y2="35.060123"
+    y1="35.060123"
+    x2="17.808401"
+    x1="30.249302"
+  />
+  <line
+    style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"
+    id="line64"
+    y2="35.060123"
+    y1="32.284225"
+    x2="29.002602"
+    x1="29.002602"
+  />
+  <path
+    style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"
+    id="path66"
+    d="m 35.2466,14.896725 a 9.3183,9.3183 0 0 1 2.754,1.1523 c 0,0 0,-5.21 -4.4936,-5.21"
+  />
+  <g id="g866" transform="translate(-0.0657)">
+    <path
+      d="m 30.0022,26.287925 a 2,2 0 0 1 -4,0 c 0,-1.1045 2.0225,-2 3.127,-2 a 3.2627,3.2627 0 0 1 0.873,2"
+      id="path24"
+    />
+    <path
+      d="m 22.1292,26.287925 a 2,2 0 0 1 -4,0 3.1184,3.1184 0 0 1 1,-2 c 1.1045,0 3,0.8955 3,2"
+      id="path26"
+    />
+  </g>
+</svg>

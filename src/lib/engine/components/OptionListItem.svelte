@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Option } from "@engine/options";
   import { cssColor } from "@engine/utils/css";
+  import * as icons from "@icons";
   import { classMap } from "@smui/common/internal";
   import {
     Graphic,
@@ -33,9 +34,14 @@
     {#if option.icon !== false}
       <Graphic class="option-list-item-icon">
         {#if typeof option.icon === "object"}
-          {#if option.icon.svg}
-            <img src={option.icon.svg} alt={option.icon.name} />
-          {:else}
+          {#if option.icon.path}
+            <img src={option.icon.path} alt={option.icon.name} />
+          {:else if option.icon.component}
+            <svelte:component
+              this={icons[option.icon.component]}
+              {...option.icon.props}
+            />
+          {:else if option.icon.name}
             <span
               class="material-symbols-outlined"
               style:color={cssColor(option.icon.color)}>{option.icon.name}</span

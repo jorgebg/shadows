@@ -44,7 +44,7 @@
       })}
       variant="outlined"
       on:click={(e) => {
-        $selectionIDs = ["map", `region:${region.id}`];
+        $selectionIDs = ["travel", `region:${region.id}`];
       }}
       ><Label>{initials(region.name)}<br />{getRegionIcons(region)}</Label
       ></Button

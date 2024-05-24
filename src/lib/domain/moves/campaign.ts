@@ -207,7 +207,7 @@ export class RemoveItem extends Move<GameState> {
 export class StartTasks extends Move<GameState> {
   commit(state, args) {
     const { G } = state;
-    logEvent(state, `Starting tasks`);
+    logEvent(state, `Starting plan`);
     for (const [memberID, task] of Object.entries(G.assignments)) {
       const member = find(G.members, memberID);
       logEvent(state, `${member.name} is performing ${task}`);

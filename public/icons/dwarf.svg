@@ -22,13 +22,12 @@
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <defs
-     id="hair" />
+  <defs id="defs39" />
   <g
      id="skin-shadow"
      transform="translate(0,-24)" />
   <g
-     id="g1493">
+     id="hair">
     <path
        d="m 14,34.5 c -4,0 -4,-6 -4,-13 0,-7 4,-14 14,-14 10,0 14,7 14,14 0,7 0,13 -4,13"
        id="path16"

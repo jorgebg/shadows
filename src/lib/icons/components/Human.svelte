@@ -1,0 +1,68 @@
+<script lang="ts">
+  export let hair = "#f1b31c";
+  export let skin = "#fcea2b";
+</script>
+
+<svg
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:cc="http://creativecommons.org/ns#"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:svg="http://www.w3.org/2000/svg"
+  xmlns="http://www.w3.org/2000/svg"
+  height="48"
+  width="48"
+  version="1.1"
+  viewBox="0 0 48 48"
+  id="emoji"
+>
+  <metadata id="metadata41">
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs id="defs39" />
+  <g transform="translate(0,-24)" id="skin-shadow" />
+  <g transform="translate(-12,-4.5)" id="hair">
+    <path
+      style={`fill:${hair}`}
+      id="path16"
+      d="m 26,39 c -4,0 -4,-6 -4,-13 0,-7 4,-14 14,-14 10,0 14,7 14,14 0,7 0,13 -4,13"
+    />
+  </g>
+  <g transform="translate(-12,-4.5)" id="skin">
+    <path
+      style={`fill:${skin}`}
+      id="path19"
+      d="m 24.9365,31 c 0,9 4.9365,14 11,14 C 41.873,45 47,40 47,31 c 0,-3 -1,-5.0005 -1,-5.0005 -3,-2.9995 -7,-8 -7,-8 -4,3 -7,6 -13,7.0005 0,0 -1.0635,0.9995 -1.0635,6 z"
+    />
+  </g>
+  <path
+    d="m 14,34.5 c -4,0 -4,-6 -4,-13 0,-7 4,-14 14,-14 10,0 14,7 14,14 0,7 0,13 -4,13"
+    id="path23"
+    style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"
+  />
+  <path
+    d="m 29.873,25.5 c 0,1.1045 -0.8955,2 -2,2 -1.1044,0 -2,-0.8955 -2,-2 0,-1.1045 0.8956,-2 2,-2 1.1045,0 2,0.8955 2,2"
+    id="path27"
+    style="fill:#000000"
+  />
+  <path
+    d="m 21.873,25.5 c 0,1.1045 -0.8955,2 -2,2 -1.1044,0 -2,-0.8955 -2,-2 0,-1.1045 0.8956,-2 2,-2 1.1045,0 2,0.8955 2,2"
+    id="path29"
+    style="fill:#000000"
+  />
+  <path
+    d="m 12.9365,26.5 c 0,9 4.9365,14 11,14 5.9365,0 11.0635,-5 11.0635,-14 0,-3 -1,-5.0005 -1,-5.0005 -3,-2.9995 -7,-8 -7,-8 -4,3 -7,6 -13,7.0005 0,0 -1.0635,0.9995 -1.0635,6 z"
+    id="path31"
+    style="fill:none;stroke:#000000;stroke-width:2;stroke-linejoin:round"
+  />
+  <path
+    d="m 22,34.199911 h 4"
+    id="path36"
+    style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"
+  />
+</svg>

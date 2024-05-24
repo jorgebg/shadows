@@ -1,5 +1,7 @@
 import { entity } from "@engine/entities";
 import { randomChoice, randomInt } from "@engine/utils/random";
+import { titleize } from "@engine/utils/string";
+import { randomSpeciesColorSet } from "@icons/species";
 import { species } from "fantastical";
 import { FACES, FACE_COLORS, Race, type Character } from "./entities/character";
 import { type Item } from "./entities/item";
@@ -18,10 +20,16 @@ export function setupG(): GameState {
 
   const items: Item[] = [];
   for (let i = 0; i < 3; i++) {
-    items.push(entity<Item>({ name: "Sword", type: "weapon" }));
+    items.push(entity<Item>({ name: "Sword", type: "weapon", icon: "🗡️" }));
   }
-  items.push(entity<Item>({ name: "Axe", type: "weapon" }));
-  items.push(entity<Item>({ name: "Kingsfoil", type: "consumable" }));
+  items.push(entity<Item>({ name: "Axe", type: "weapon", icon: "🪓" }));
+  items.push(entity<Item>({ name: "Bow", type: "weapon", icon: "🏹" }));
+  items.push(entity<Item>({ name: "Shield", type: "shield", icon: "🛡️" }));
+  items.push(entity<Item>({ name: "Padded", type: "armor", icon: "👕" }));
+  items.push(entity<Item>({ name: "Ring", type: "jewel", icon: "💍" }));
+  items.push(
+    entity<Item>({ name: "Kingsfoil", type: "consumable", icon: "🌿" }),
+  );
 
   const members: Character[] = [];
   const faces = new Set<string>(FACES);
@@ -33,11 +41,12 @@ export function setupG(): GameState {
     colors.delete(color);
     const race = randomChoice([Race.Human, Race.Elf, Race.Dwarf]);
     const name = species[race]();
+    const props = randomSpeciesColorSet(race);
     members.push(
       entity<Character>({
         name,
         race,
-        icon: { svg: `icons/${race}.svg`, name },
+        icon: { component: titleize(race), props, name },
         str: randomInt(1, 3),
         dex: randomInt(1, 3),
         int: randomInt(1, 3),

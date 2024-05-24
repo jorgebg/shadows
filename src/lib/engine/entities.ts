@@ -1,14 +1,12 @@
 import ShortUniqueId from "short-unique-id";
+import type { Icon } from "./icons";
 
 const uid = new ShortUniqueId();
 
 export interface Entity {
   id: string;
   name: string;
-  icon:
-    | { name: string; color?: string | number; svg?: string }
-    | string
-    | number;
+  icon: Icon;
 }
 
 export function entity<T extends Entity>(attrs: Partial<T> | string): T {
