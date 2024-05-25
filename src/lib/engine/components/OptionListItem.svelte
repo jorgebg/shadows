@@ -48,7 +48,7 @@
             >
           {/if}
         {:else}
-          {option.title
+          {option.name
             .split(/[\s-_]+/)
             .map((n) => n[0])
             .splice(0, 3)
@@ -58,14 +58,14 @@
     {/if}
     {#if option.description}
       <Text class="option-list-item-long-text">
-        <PrimaryText>{option.title}</PrimaryText>
+        <PrimaryText>{option.name}</PrimaryText>
         <SecondaryText>
           {option.description}
         </SecondaryText>
       </Text>
     {:else}
       <Text class="option-list-item-short-text">
-        {option.title}
+        {option.name}
       </Text>
     {/if}
     <slot name="meta">

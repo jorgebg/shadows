@@ -1,5 +1,5 @@
 export function repr(obj: any) {
-  return obj.title ?? obj.name ?? obj.id ?? obj;
+  return obj.name ?? obj.id ?? obj;
 }
 
 export function titleize(str: any) {

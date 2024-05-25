@@ -7,7 +7,7 @@ import { assignDefaults } from "./utils/object";
 
 export interface Option<GS = any> {
   id?: string;
-  title: string;
+  name: string;
   description?: string;
   hidden?: boolean;
   help?: string;
@@ -33,7 +33,7 @@ export function defaultSetup<GS = any>(
     assignDefaults(node, move.option(state));
   }
   if (node.id === undefined) {
-    node.id = node.title.replaceAll(" ", "_").toLowerCase();
+    node.id = node.name.replaceAll(" ", "_").toLowerCase();
     if (node.args) {
       node.id += Object.entries(node.args)
         .map(([name, arg]) => `_${name}:${arg.id || arg}`)
@@ -107,13 +107,13 @@ export class OptionTree<GS = any> extends Array<Option<GS>> {
 }
 
 export function confirm(option: Option): Option {
-  const { title, icon } = option;
+  const { name, icon } = option;
   const header = "Are you sure?";
   return {
-    title,
+    name,
     icon,
     header,
-    children: [{ ...option, title: `Confirm ${title}` }],
+    children: [{ ...option, name: `Confirm ${name}` }],
     get description() {
       return this.children[0].description;
     },

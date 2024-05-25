@@ -23,7 +23,7 @@ function logEvent({ G, ctx }: State<GameState>, message: string) {
 function genericLogEvent(state, move: Move, args: Move["args"]) {
   logEvent(
     state,
-    `Move: ${move.title} ${Object.values<Entity>(args)
+    `Move: ${move.name} ${Object.values<Entity>(args)
       .map((e) => e.name)
       .join(", ")}`,
   );
@@ -36,7 +36,7 @@ export class Travel extends Move<GameState> {
   commit(state, args) {
     const { G } = state;
     state.G.currentRegionID = args.region.id;
-    logEvent(state, `Travelled to ${args.region}`);
+    logEvent(state, `Travelled to ${args.region.name}`);
     endTurn(state);
   }
   validate(state) {

@@ -33,17 +33,17 @@ export function getExampleConfig<GS>() {
       }),
       optionTree: (state) => [
         {
-          title: "Counter",
+          name: "Counter",
           icon: "pin",
           children: [
             {
-              title: "Increment",
+              name: "Increment",
               icon: "arrow_upward",
               args: { n: 1 },
               move: CountMove,
             },
             {
-              title: "Decrement",
+              name: "Decrement",
               icon: "arrow_downward",
               args: { n: -1 },
               move: CountMove,

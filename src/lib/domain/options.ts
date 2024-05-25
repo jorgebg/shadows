@@ -28,13 +28,13 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
   if (!ctx.gameover) {
     tree = [
       {
-        title: "Plan",
+        name: "Plan",
         description: "Assign tasks for the day",
         icon: "map",
         component: PlanScreen,
         children: [
           ...TaskList.map((task) => ({
-            title: task.name,
+            name: task.name,
             description: task.description,
             icon: task.icon,
             args: { task },
@@ -44,20 +44,20 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
             })),
           })),
           confirm({
-            title: "Start",
+            name: "Start",
             icon: { name: "start", color: "yellow" },
             move: StartTasks,
           }),
         ],
       },
       {
-        title: "Travel",
+        name: "Travel",
         description: "Map of regions",
         icon: "signpost",
         component: TravelScreen,
         children: G.regions.map((region) => ({
           id: `region:${region.id}`,
-          title: region.name,
+          name: region.name,
           description: getRegionIcons(region),
           args: { region },
           hidden: true,
@@ -72,12 +72,12 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         })),
       },
       {
-        title: "Band",
+        name: "Band",
         description: "Manage members",
         icon: "groups",
         component: BandScreen,
         children: G.members.map((member) => ({
-          title: member.name,
+          name: member.name,
           id: member.id,
           description: `Power ${power(member)}, ${
             Object.values(member.equipment)
@@ -89,21 +89,21 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
           args: { member },
           children: [
             {
-              title: "Equipment",
+              name: "Equipment",
               description: "Manage equipped items",
               icon: "accessibility",
               children: EquipmentSlotList.map((slot) => ({
                 ...slot,
                 icon:
                   find(G.items, member.equipment[slot.id])?.icon || slot.icon,
-                title: slot.name,
+                name: slot.name,
                 args: { slot },
                 description:
                   find(G.items, member.equipment[slot.id])?.name || "<empty>",
                 children: [
                   {
                     id: "unequip",
-                    title: "Unequip",
+                    name: "Unequip",
                     icon: "close",
                     move: UnequipItem,
                   },
@@ -118,7 +118,7 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
               })),
             },
             {
-              title: "Skills",
+              name: "Skills",
               description: "Use skills",
               icon: "category",
               children: member.skills.map((skill) => {
@@ -129,7 +129,7 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
               }),
             },
             confirm({
-              title: "Disband",
+              name: "Disband",
               icon: "close",
               move: DisbandMember,
             }),
@@ -137,18 +137,18 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         })),
       },
       {
-        title: "Items",
+        name: "Items",
         description: "Use, equip or remove items",
         icon: "shelves",
         component: ItemsScreen,
         children: G.items.map((item) => ({
-          title: item.name,
+          name: item.name,
           id: item.id,
           icon: item.icon,
           args: { item },
           children: [
             {
-              title: "Use",
+              name: "Use",
               icon: "back_hand",
               disabled: item.type != "consumable",
               children: G.members.map((member) => ({
@@ -157,7 +157,7 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
               })),
             },
             confirm({
-              title: "Drop",
+              name: "Drop",
               icon: "close",
               disabled: !!equipped(G.members, item.id),
               move: RemoveItem,
@@ -166,16 +166,16 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         })),
       },
       {
-        title: "Events",
+        name: "Events",
         description: "History of events",
         icon: "history_edu",
         children: G.events
           .map((lines, turn) => ({
-            title: `Day ${turn}`,
+            name: `Day ${turn}`,
             icon: "calendar_month",
             children: lines.map((line, i) => ({
               id: i,
-              title: line,
+              name: line,
               icon: false,
             })),
           }))
