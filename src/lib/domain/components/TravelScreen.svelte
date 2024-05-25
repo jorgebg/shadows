@@ -46,7 +46,7 @@
       on:click={(e) => {
         $selectionIDs = ["travel", `region:${region.id}`];
       }}
-      ><Label>{initials(region.name)}<br />{getRegionIcons(region)}</Label
+      ><Label>{getRegionIcons(region)}</Label
       ></Button
     >
   {/each}
