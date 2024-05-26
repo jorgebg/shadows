@@ -2,8 +2,8 @@
   import type { GameAppConfig } from "@engine/gameapp";
   import { cssColor } from "@engine/utils/css";
   import Button, {
-    Icon as ButtonIcon,
-    Label as ButtonLabel,
+      Icon as ButtonIcon,
+      Label as ButtonLabel,
   } from "@smui/button";
   import LayoutGrid, { Cell } from "@smui/layout-grid";
   import List from "@smui/list";

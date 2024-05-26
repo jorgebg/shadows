@@ -18,9 +18,10 @@ export class Move<GS = any> {
 
   option(state: SimpleState<GS>): Option {
     const apply = (client) => {
-      client.moves[this.moveId](this.args);
+      client.moves[this.code](this.args);
     };
     return {
+      code: this.code,
       name: this.name,
       apply: apply,
       disabled: !this.validate(state),
@@ -29,7 +30,7 @@ export class Move<GS = any> {
 
   send(client: _ClientImpl): MoveReturn<GS> {
     if (this.validate(client.getState())) {
-      return client.moves[this.moveId](this.args);
+      return client.moves[this.code](this.args);
     } else {
       return INVALID_MOVE;
     }
@@ -40,15 +41,15 @@ export class Move<GS = any> {
   }
 
   toString(): string {
-    return this.moveId;
+    return this.code;
   }
 
-  get moveId(): string {
+  get code(): string {
     return this.constructor.name;
   }
 
   get name(): string {
-    const tokens = this.moveId.replace(/([A-Z])/g, " $1");
+    const tokens = this.code.replace(/([A-Z])/g, " $1");
     let name = (tokens.charAt(0).toUpperCase() + tokens.slice(1)).trim();
     if (this.args) {
       name += " ";

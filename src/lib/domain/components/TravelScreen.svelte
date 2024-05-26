@@ -8,7 +8,6 @@
   import NestedList from "@engine/components/utils/NestedList.svelte";
   import { find } from "@engine/entities";
   import { selectionIDs } from "@engine/screen";
-  import { initials } from "@engine/utils/string";
   import Button, { Label } from "@smui/button";
   import Card from "@smui/card";
   import { classMap } from "@smui/common/internal";
@@ -44,10 +43,8 @@
       })}
       variant="outlined"
       on:click={(e) => {
-        $selectionIDs = ["travel", `region:${region.id}`];
-      }}
-      ><Label>{getRegionIcons(region)}</Label
-      ></Button
+        $selectionIDs = ["travel", `region?region=${region.id}`];
+      }}><Label>{getRegionIcons(region)}</Label></Button
     >
   {/each}
 </div>

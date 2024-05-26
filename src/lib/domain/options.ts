@@ -28,13 +28,13 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
   if (!ctx.gameover) {
     tree = [
       {
-        name: "Plan",
+        code: "plan",
         description: "Assign tasks for the day",
         icon: "map",
         component: PlanScreen,
         children: [
           ...TaskList.map((task) => ({
-            name: task.name,
+            code: task.id,
             description: task.description,
             icon: task.icon,
             args: { task },
@@ -51,12 +51,12 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         ],
       },
       {
-        name: "Travel",
+        code: "travel",
         description: "Map of regions",
         icon: "signpost",
         component: TravelScreen,
         children: G.regions.map((region) => ({
-          id: `region:${region.id}`,
+          code: "region",
           name: region.name,
           description: getRegionIcons(region),
           args: { region },
@@ -72,13 +72,13 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         })),
       },
       {
-        name: "Band",
+        code: "band",
         description: "Manage members",
         icon: "groups",
         component: BandScreen,
         children: G.members.map((member) => ({
+          code: "select_member",
           name: member.name,
-          id: member.id,
           description: `Power ${power(member)}, ${
             Object.values(member.equipment)
               .filter((i) => i)
@@ -89,7 +89,7 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
           args: { member },
           children: [
             {
-              name: "Equipment",
+              code: "equipment",
               description: "Manage equipped items",
               icon: "accessibility",
               children: EquipmentSlotList.map((slot) => ({
@@ -102,8 +102,7 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
                   find(G.items, member.equipment[slot.id])?.name || "<empty>",
                 children: [
                   {
-                    id: "unequip",
-                    name: "Unequip",
+                    code: "unequip",
                     icon: "close",
                     move: UnequipItem,
                   },
@@ -118,7 +117,7 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
               })),
             },
             {
-              name: "Skills",
+              code: "skills",
               description: "Use skills",
               icon: "category",
               children: member.skills.map((skill) => {
@@ -129,7 +128,7 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
               }),
             },
             confirm({
-              name: "Disband",
+              code: "disband",
               icon: "close",
               move: DisbandMember,
             }),
@@ -137,18 +136,18 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         })),
       },
       {
-        name: "Items",
+        code: "items",
         description: "Use, equip or remove items",
         icon: "shelves",
         component: ItemsScreen,
         children: G.items.map((item) => ({
+          code: "select_item",
           name: item.name,
-          id: item.id,
           icon: item.icon,
           args: { item },
           children: [
             {
-              name: "Use",
+              code: "use",
               icon: "back_hand",
               disabled: item.type != "consumable",
               children: G.members.map((member) => ({
@@ -157,7 +156,7 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
               })),
             },
             confirm({
-              name: "Drop",
+              code: "drop",
               icon: "close",
               disabled: !!equipped(G.members, item.id),
               move: RemoveItem,
@@ -166,16 +165,15 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         })),
       },
       {
-        name: "Events",
+        code: "events",
         description: "History of events",
         icon: "history_edu",
         children: G.events
           .map((lines, turn) => ({
-            name: `Day ${turn}`,
+            code: `day_${turn}`,
             icon: "calendar_month",
             children: lines.map((line, i) => ({
-              id: i,
-              name: line,
+              code: line,
               icon: false,
             })),
           }))
