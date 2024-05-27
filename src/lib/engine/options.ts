@@ -28,6 +28,17 @@ export interface Option<GS = any> {
   setup?: <GS>(state: SimpleState<GS>, option: Option<GS>) => void;
 }
 
+export function OptionID(code: Option["code"], args?: Option["args"]) {
+  if (args === undefined || Object.keys(args).length == 0) {
+    return code;
+  }
+  const normalizedArgs = Object.entries(args)
+    .sort()
+    .map(([k, v]) => [k, v.id || v]);
+  const argsStr = new URLSearchParams(normalizedArgs).toString();
+  return `${code}?${argsStr}`;
+}
+
 export function defaultSetup<GS = any>(
   state: SimpleState<GS>,
   node: Option<GS>,
@@ -39,16 +50,7 @@ export function defaultSetup<GS = any>(
   }
   node.code ??= `level_${node.level}`;
   node.name ??= titleize(node.code.replaceAll(/[-_]+/gi, " ").toLowerCase());
-
-  if (node.id === undefined) {
-    node.id = node.code;
-    if (node.args) {
-      node.id += "?";
-      node.id += Object.entries(node.args)
-        .map(([name, arg]) => `${name}=${arg.id || arg}`)
-        .join("&");
-    }
-  }
+  node.id ??= OptionID(node.code, node.args);
   if (typeof node.icon === "string") {
     node.icon = { name: node.icon };
   }
@@ -123,7 +125,7 @@ export function confirm(option: Option): Option {
     code,
     icon,
     header,
-    children: [{ ...option, name: `Confirm ${name}` }],
+    children: [{ ...option, code: `confirm_${code}` }],
     get description() {
       return this.children[0].description;
     },

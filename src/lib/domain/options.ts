@@ -44,7 +44,7 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
             })),
           })),
           confirm({
-            name: "Start",
+            code: "start",
             icon: { name: "start", color: "yellow" },
             move: StartTasks,
           }),

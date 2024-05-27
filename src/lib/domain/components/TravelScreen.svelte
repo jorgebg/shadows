@@ -7,6 +7,7 @@
   import { type GameState } from "@domain/state";
   import NestedList from "@engine/components/utils/NestedList.svelte";
   import { find } from "@engine/entities";
+  import { OptionID } from "@engine/options";
   import { selectionIDs } from "@engine/screen";
   import Button, { Label } from "@smui/button";
   import Card from "@smui/card";
@@ -43,7 +44,7 @@
       })}
       variant="outlined"
       on:click={(e) => {
-        $selectionIDs = ["travel", `region?region=${region.id}`];
+        $selectionIDs = ["travel", OptionID("region", { region })];
       }}><Label>{getRegionIcons(region)}</Label></Button
     >
   {/each}
