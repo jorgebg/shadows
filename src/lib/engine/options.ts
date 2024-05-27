@@ -51,18 +51,8 @@ export function defaultSetup<GS = any>(
   node.code ??= `level_${node.level}`;
   node.name ??= titleize(node.code.replaceAll(/[-_]+/gi, " ").toLowerCase());
   node.id ??= OptionID(node.code, node.args);
-  if (typeof node.icon === "string") {
-    node.icon = { name: node.icon };
-  }
   if (node.children) {
-    const children = new OptionTree(...node.children);
-    node.children = children;
-    if (node.args) {
-      for (const child of children) {
-        child.args = { ...(child.args || {}), ...node.args };
-      }
-    }
-    children.setup(state, node);
+    node.children = new OptionTree(...node.children).setup(state, node);
   }
 }
 
@@ -71,15 +61,19 @@ export class OptionTree<GS = any> extends Array<Option<GS>> {
     [key: string]: Option<GS>;
   } = {};
 
-  constructor(...args: any[]) {
-    super(...args);
+  constructor(...arrayArgs: any[]) {
+    super(...arrayArgs);
   }
   setup(state: SimpleState<GS>, parent?: Option<GS>) {
     for (const node of this) {
+      if (parent?.args) {
+        node.args = { ...(node.args || {}), ...parent.args };
+      }
       node.parent = parent;
       (node.setup || defaultSetup)<GS>(state, node);
       this.idMap[node.id] = node;
     }
+    return this;
   }
   getById(id: string) {
     return this.idMap[id];

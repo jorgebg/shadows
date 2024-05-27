@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { GameAppConfig } from "@engine/gameapp";
-  import { cssColor } from "@engine/utils/css";
   import Button, {
     Icon as ButtonIcon,
     Label as ButtonLabel,
@@ -8,11 +7,12 @@
   import LayoutGrid, { Cell } from "@smui/layout-grid";
   import List from "@smui/list";
   import Paper, { Content } from "@smui/paper";
-  import Tab, { Icon as TabIcon, Label as TabLabel } from "@smui/tab";
+  import Tab, { Label as TabLabel } from "@smui/tab";
   import TabBar from "@smui/tab-bar";
   import type { _ClientImpl } from "boardgame.io/dist/types/src/client/client";
   import { derived } from "svelte/store";
   import { OptionNavigator, activeOption, selectionIDs } from "../screen";
+  import Icon from "./Icon.svelte";
   import OptionListItem from "./OptionListItem.svelte";
 
   export let config: GameAppConfig;
@@ -48,15 +48,11 @@
       style={`width: ${100 / optionTree.length}%`}
       class="screen-tab"
     >
-      {#if typeof screen.icon === "object"}
-        <TabIcon
-          class="material-symbols-outlined"
-          style="color: {cssColor(screen.icon.color)}"
-          >{screen.icon.name}</TabIcon
-        >
-      {:else}
-        <TabIcon class="material-symbols-outlined">{screen.name[0]}</TabIcon>
-      {/if}
+      <Icon
+        icon={screen.icon}
+        name={screen.name}
+        class="material-symbols-outlined mdc-tab__icon"
+      ></Icon>
       <TabLabel class="screen-tab-label">{screen.name}</TabLabel>
     </Tab>
   </TabBar>

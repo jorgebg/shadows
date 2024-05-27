@@ -1,7 +1,5 @@
 <script lang="ts">
   import type { Option } from "@engine/options";
-  import { cssColor } from "@engine/utils/css";
-  import * as icons from "@icons";
   import { classMap } from "@smui/common/internal";
   import {
     Graphic,
@@ -11,6 +9,7 @@
     SecondaryText,
     Text,
   } from "@smui/list";
+  import Icon from "./Icon.svelte";
 
   export let option: Option;
   export let action: (CustomEvent) => void = undefined;
@@ -33,27 +32,7 @@
   >
     {#if option.icon !== false}
       <Graphic class="option-list-item-icon">
-        {#if typeof option.icon === "object"}
-          {#if option.icon.path}
-            <img src={option.icon.path} alt={option.icon.name} />
-          {:else if option.icon.component}
-            <svelte:component
-              this={icons[option.icon.component]}
-              {...option.icon.props}
-            />
-          {:else if option.icon.name}
-            <span
-              class="material-symbols-outlined"
-              style:color={cssColor(option.icon.color)}>{option.icon.name}</span
-            >
-          {/if}
-        {:else}
-          {option.name
-            .split(/[\s-_]+/)
-            .map((n) => n[0])
-            .splice(0, 3)
-            .join("")}
-        {/if}
+        <Icon icon={option.icon} name={option.name}></Icon>
       </Graphic>
     {/if}
     {#if option.description}
