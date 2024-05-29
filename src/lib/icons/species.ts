@@ -60,7 +60,7 @@ export function randomSpeciesColorSet(iconName: SPECIES): SpeciesColorSet {
       hair = weightedRandomChoice(
         HUMAN_HAIR_COLORS.map((item, index) => ({
           item,
-          weight: index > 5 ? 1 : 20,
+          weight: index > 4 ? 1 : 20,
         })),
       );
       break;
