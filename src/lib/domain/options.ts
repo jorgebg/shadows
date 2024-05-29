@@ -1,5 +1,6 @@
 import { find } from "@engine/entities";
 import { confirm, type Option } from "@engine/options";
+import { titleize } from "@engine/utils/string";
 import type { Ctx } from "boardgame.io";
 import BandScreen from "./components/BandScreen.svelte";
 import ItemsScreen from "./components/ItemsScreen.svelte";
@@ -79,7 +80,7 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         children: G.members.map((member) => ({
           code: "select_member",
           name: member.name,
-          description: `Power ${power(member)}, ${
+          description: `${titleize(member.race)}, Power ${power(member)}, ${
             Object.values(member.equipment)
               .filter((i) => i)
               .map((i) => find(G.items, i).name)
