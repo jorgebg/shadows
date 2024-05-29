@@ -15,6 +15,26 @@ export function randomChoice<T>(list: T[]): T {
   return list[randomInt(0, list.length - 1)];
 }
 
+export type WeightedChoice<T> = {
+  item: T;
+  weight: number;
+};
+
+export function weightedRandomChoice<T>(choices: WeightedChoice<T>[]): T {
+  const totalWeight = choices.reduce((sum, choice) => sum + choice.weight, 0);
+  let random = Math.random() * totalWeight;
+
+  for (const choice of choices) {
+    if (random < choice.weight) {
+      return choice.item;
+    }
+    random -= choice.weight;
+  }
+
+  // Fallback
+  return choices[choices.length - 1].item;
+}
+
 export function randomColor(s = 80, l = 80, cardinality = 36): string {
   let h = randomInt(0, cardinality) * (360 / cardinality);
   return `hsl(${h}, ${s}%, ${l}%)`;
