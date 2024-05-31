@@ -37,7 +37,7 @@
 <div class="region-map">
   {#each G.regions as region (region.id)}
     <Button
-      color={G.currentRegionID == region.id ? "secondary" : "primary"}
+      color={G.currentRegionId == region.id ? "secondary" : "primary"}
       class={classMap({
         region: true,
         travellable: travellable({ G, ctx }, region),

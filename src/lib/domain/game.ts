@@ -22,7 +22,7 @@ export function statusBar(state: { G: GameState; ctx: Ctx }) {
     { label: "Day", value: ctx.turn },
     {
       label: "Region",
-      value: initials(find<Region>(G.regions, G.currentRegionID).name),
+      value: initials(find<Region>(G.regions, G.currentRegionId).name),
     },
   ];
 }

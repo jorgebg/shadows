@@ -25,8 +25,10 @@ export interface LocationType {
 export const LocationTypeMap: Record<string, LocationType> = {
   TOWN: { id: "TOWN", name: "Town", icon: "🏘️" },
   CITY: { id: "CITY", name: "City", icon: "🏰" },
-  FOREST: { id: "FOREST", name: "Forest", icon: "🌲" },
-  MOUNTAIN: { id: "MOUNTAIN", name: "Mountain", icon: "⛰️" },
+  FOREST_1: { id: "FOREST_1", name: "Forest", icon: "🌲" },
+  FOREST_2: { id: "FOREST_2", name: "Forest", icon: "🌳" },
+  MOUNTAIN_1: { id: "MOUNTAIN_1", name: "Mountain", icon: "⛰️" },
+  MOUNTAIN_2: { id: "MOUNTAIN_2", name: "Mountain", icon: "🏔️" },
   RIVER: { id: "RIVER", name: "River", icon: "🏞️" },
   RUINS: { id: "RUINS", name: "Ruins", icon: "🏚️" },
 } as const;
@@ -74,7 +76,7 @@ export function travellable(
   { G, ctx }: SimpleState<GameState>,
   region: Region,
 ) {
-  const currentRegion = find<Region>(G.regions, G.currentRegionID);
+  const currentRegion = find<Region>(G.regions, G.currentRegionId);
 
   return (
     new Grid(3, 3)

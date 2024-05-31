@@ -1,4 +1,6 @@
-import { entity, type Entity } from "@engine/entities";
+import type { GameState } from "@domain/state";
+import type { UIElement } from "@domain/ui";
+import { get } from "@engine/repository";
 import type { Character } from "./character";
 import type { Item, ItemType } from "./item";
 
@@ -7,48 +9,47 @@ export interface Equipment {
   secondary: Item["id"];
   shield: Item["id"];
   armor: Item["id"];
-  jewel: Item["id"];
+  amulet: Item["id"];
 }
 
 export type EquipmentSlotId = keyof Equipment;
 
-export interface EquipmentSlot extends Entity {
+export interface EquipmentSlot extends UIElement {
   id: EquipmentSlotId;
-  description: string;
   type: ItemType;
 }
 
 export const EquipmentSlotList: EquipmentSlot[] = [
-  entity<EquipmentSlot>({
+  {
     id: "primary",
     icon: "counter_1",
     name: "Weapon 1",
     type: "weapon",
-  }),
-  entity<EquipmentSlot>({
+  },
+  {
     id: "secondary",
     icon: "counter_2",
     name: "Weapon 2",
     type: "weapon",
-  }),
-  entity<EquipmentSlot>({
+  },
+  {
     id: "shield",
     icon: "shield",
     name: "Shield",
     type: "shield",
-  }),
-  entity<EquipmentSlot>({
+  },
+  {
     id: "armor",
     icon: "apparel",
     name: "Armor",
     type: "armor",
-  }),
-  entity<EquipmentSlot>({
-    id: "jewel",
+  },
+  {
+    id: "amulet",
     icon: "diamond",
-    name: "Jewel",
-    type: "jewel",
-  }),
+    name: "amulet",
+    type: "amulet",
+  },
 ];
 
 export function equipped(members: Character[], itemId: Item["id"]): Character {
@@ -58,5 +59,16 @@ export function equipped(members: Character[], itemId: Item["id"]): Character {
         return member;
       }
     }
+  }
+}
+
+export function equipment(
+  G: GameState,
+  member: Character,
+  slot: EquipmentSlot,
+): Item {
+  const itemId = get<Character>(G, member.id)?.equipment[slot.id];
+  if (typeof itemId !== undefined) {
+    return get<Item>(G, itemId);
   }
 }

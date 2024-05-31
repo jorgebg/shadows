@@ -1,4 +1,4 @@
-import { randomChoice, weightedRandomChoice } from "@engine/utils/random";
+import { randomChoice, randomInt } from "@engine/utils/random";
 
 export const HUMAN_SKIN_COLORS = [
   "#6A462F",
@@ -6,6 +6,7 @@ export const HUMAN_SKIN_COLORS = [
   "#C19A65",
   "#DEBB90",
   "#FADCBC",
+  "#FCEBD9",
 ];
 
 export const HUMAN_HAIR_COLORS = [
@@ -14,6 +15,9 @@ export const HUMAN_HAIR_COLORS = [
   "#5E3630",
   "#9C5449",
   "#B65C47",
+];
+
+export const HUMAN_RARE_HAIR_COLORS = [
   "#BF1E2D",
   "#C16F19",
   "#D93838",
@@ -50,23 +54,24 @@ export interface SpeciesColorSet {
 
 export type SPECIES = "human" | "elf" | "dwarf" | "orc";
 
-export function randomSpeciesColorSet(iconName: SPECIES): SpeciesColorSet {
+export function randomSpeciesColorSet(
+  iconName: SPECIES,
+  random?: typeof Math.random,
+): SpeciesColorSet {
   let skin, hair;
   switch (iconName) {
     case "human":
     case "elf":
     case "dwarf":
-      skin = randomChoice(HUMAN_SKIN_COLORS);
-      hair = weightedRandomChoice(
-        HUMAN_HAIR_COLORS.map((item, index) => ({
-          item,
-          weight: index > 4 ? 1 : 20,
-        })),
-      );
+      skin = randomChoice(HUMAN_SKIN_COLORS, random);
+      hair =
+        randomInt(1, 100) < 95
+          ? randomChoice(HUMAN_HAIR_COLORS, random)
+          : randomChoice(HUMAN_RARE_HAIR_COLORS, random);
       break;
     case "orc":
-      skin = randomChoice(ORC_SKIN_COLORS);
-      hair = randomChoice(ORC_HAIR_COLORS);
+      skin = randomChoice(ORC_SKIN_COLORS, random);
+      hair = randomChoice(ORC_HAIR_COLORS, random);
       break;
   }
   return { skin, hair };

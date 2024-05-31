@@ -1,8 +1,10 @@
 <script lang="ts">
+  import type { Character } from "@domain/entities/character";
   import { TaskList } from "@domain/entities/task";
   import { AssignTask } from "@domain/moves/campaign";
   import { type GameState } from "@domain/state";
   import { find } from "@engine/entities";
+  import { get } from "@engine/repository";
   import DataTable, { Body, Cell, Head, Row } from "@smui/data-table";
   import IconButton from "@smui/icon-button";
   import type { _ClientImpl } from "boardgame.io/dist/types/src/client/client";
@@ -22,9 +24,9 @@
     </Row>
   </Head>
   <Body>
-    {#each Object.entries(G.assignments) as [memberID, taskID] (memberID)}
-      {@const member = find(G.members, memberID)}
-      {@const task = find(TaskList, taskID)}
+    {#each Object.entries(G.assignments) as [memberId, taskId] (memberId)}
+      {@const member = get < Character > (G, memberId)}
+      {@const task = find(TaskList, taskId)}
       <Row>
         <Cell>{member.name}:<br />{task.name}</Cell>
         <Cell
