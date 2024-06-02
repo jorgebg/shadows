@@ -4,7 +4,7 @@ import { titleize } from "@engine/utils/string";
 import { randomSpeciesColorSet } from "@icons/species";
 import type { Ctx } from "boardgame.io";
 import type { RandomAPI } from "boardgame.io/src/plugins/random/random";
-import { places, species } from "fantastical";
+import { human, species } from "fantastical";
 import { getPlayerBandId, type Band } from "./entities/bands";
 import { Race, type Character } from "./entities/character";
 import type { TurnLog } from "./entities/event";
@@ -16,7 +16,7 @@ import {
   type LocationType,
   type Region,
 } from "./entities/location";
-import { type Map } from "./entities/map";
+import { type Map, type Point } from "./entities/map";
 import { CardinalPointsGrid, generateRegion } from "./entities/region";
 import { type GameState } from "./state";
 
@@ -46,29 +46,28 @@ export function setupG(
   };
   create<Map>(G, "maps#world", { size: { x: world.WIDTH, y: world.HEIGHT } });
   // Regions
-  const regions: Region[] = [];
+  const cells: Point[] = [];
   for (let x = 0; x < world.WIDTH; x++) {
     for (let y = 0; y < world.HEIGHT; y++) {
       const cell = { x, y };
-      regions.push(
-        create<Region>(G, getRegionId(cell), {
-          cell,
-          name: places.tavern(),
-        }),
-      );
+      cells.push({ x, y });
+      create<Region>(G, getRegionId(cell), {
+        cell,
+        name: human({ allowMultipleNames: false }),
+      });
     }
   }
   // Locations
   const locationTypePool: LocationType[] = [
-    ...new Array(regions.length).fill(LocationTypeMap.TOWN),
-    ...new Array(regions.length).fill(LocationTypeMap.DEEP_FOREST),
+    ...new Array(cells.length).fill(LocationTypeMap.TOWN),
+    ...new Array(cells.length).fill(LocationTypeMap.DEEP_FOREST),
   ].reverse();
   const locations: Location[] = [];
   let locationIndex = 0;
   while (locationTypePool.length > 0) {
     locations.push(
       create<Location>(G, "locations", {
-        regionId: regions[locationIndex % regions.length].id,
+        cell: cells[locationIndex % cells.length],
         typeId: locationTypePool.pop().id,
       }),
     );

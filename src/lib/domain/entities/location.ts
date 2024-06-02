@@ -25,7 +25,7 @@ export interface Region extends Entity {
 }
 
 export interface Location extends Entity {
-  regionId: Region["id"];
+  cell: Point;
   typeId: LocationType["id"];
 }
 
@@ -34,9 +34,7 @@ export function getRegionId({ x, y }: Point) {
 }
 
 export function getCellIcons(G: GameState, cell: Point): string {
-  return filter<Location>(G, "locations", {
-    regionId: getRegionId(cell),
-  }).reduce(
+  return filter<Location>(G, "locations", { cell }).reduce(
     (icons, location) => icons + LocationTypeMap[location.typeId].icon,
     "",
   );
