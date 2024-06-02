@@ -17,6 +17,9 @@ dependencies:
   fantastical:
     specifier: ^2.0.1
     version: 2.0.1
+  fast-deep-equal:
+    specifier: ^3.1.3
+    version: 3.1.3
   hotkeys-js:
     specifier: ^3.12.0
     version: 3.12.0
@@ -2076,6 +2079,10 @@ packages:
       lodash.endswith: 4.2.1
       lodash.includes: 4.3.0
       lodash.sample: 4.2.1
+    dev: false
+
+  /fast-deep-equal@3.1.3:
+    resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
     dev: false
 
   /fast-glob@3.3.1:

@@ -1,14 +1,21 @@
 import { create } from "@engine/repository";
-import { randomChoice } from "@engine/utils/random";
+import { randomChoice, randomInt } from "@engine/utils/random";
 import { titleize } from "@engine/utils/string";
 import { randomSpeciesColorSet } from "@icons/species";
 import type { Ctx } from "boardgame.io";
 import type { RandomAPI } from "boardgame.io/src/plugins/random/random";
-import { species } from "fantastical";
+import { places, species } from "fantastical";
 import { getPlayerBandId, type Band } from "./entities/bands";
 import { Race, type Character } from "./entities/character";
 import type { TurnLog } from "./entities/event";
-import { ItemFactory, type Item } from "./entities/item";
+import { ItemFactory } from "./entities/item";
+import type { Location } from "./entities/location";
+import {
+  LocationTypeMap,
+  getRegionId,
+  type LocationType,
+  type Region,
+} from "./entities/location";
 import { type Map } from "./entities/map";
 import { CardinalPointsGrid, generateRegion } from "./entities/region";
 import { type GameState } from "./state";
@@ -17,29 +24,66 @@ export function setupG(
   { ctx, random, ...plugins }: { ctx: Ctx; random: RandomAPI },
   setupData: any,
 ): GameState {
-  const regions = [];
+  const oldRegions = [];
   for (let x = 0; x < CardinalPointsGrid.length; x++) {
     const lat = CardinalPointsGrid[x];
     for (let y = 0; y < lat.length; y++) {
-      regions.push(generateRegion({ x, y }));
+      oldRegions.push(generateRegion({ x, y }));
     }
   }
-  const currentRegionId = randomChoice(regions).id;
+  const currentRegionId = randomChoice(oldRegions).id;
 
   const assignments = {};
 
   const G = {} as GameState;
-  Object.assign(G, { currentRegionId, regions, assignments });
+  Object.assign(G, { currentRegionId, regions: oldRegions, assignments });
   //---
   const items = new ItemFactory(G, "items");
-  create<Map>(G, "maps#world", { size: { x: 3, y: 3 } });
+  // World map
+  const world = {
+    WIDTH: 3,
+    HEIGHT: 3,
+  };
+  create<Map>(G, "maps#world", { size: { x: world.WIDTH, y: world.HEIGHT } });
+  // Regions
+  const regions: Region[] = [];
+  for (let x = 0; x < world.WIDTH; x++) {
+    for (let y = 0; y < world.HEIGHT; y++) {
+      const cell = { x, y };
+      regions.push(
+        create<Region>(G, getRegionId(cell), {
+          cell,
+          name: places.tavern(),
+        }),
+      );
+    }
+  }
+  // Locations
+  const locationTypePool: LocationType[] = [
+    ...new Array(regions.length).fill(LocationTypeMap.TOWN),
+    ...new Array(regions.length).fill(LocationTypeMap.DEEP_FOREST),
+  ].reverse();
+  const locations: Location[] = [];
+  let locationIndex = 0;
+  while (locationTypePool.length > 0) {
+    locations.push(
+      create<Location>(G, "locations", {
+        regionId: regions[locationIndex % regions.length].id,
+        typeId: locationTypePool.pop().id,
+      }),
+    );
+    locationIndex++;
+  }
+
+  // Player Bands
   for (let nPlayer = 0; nPlayer < ctx.numPlayers; nPlayer++) {
     const playerId = nPlayer.toString();
     const band = create<Band>(G, getPlayerBandId(playerId), {
       playerId: playerId.toString(),
-      locationId: "locations#1", //TODO
+      cell: { x: randomInt(0, world.WIDTH), y: randomInt(0, world.HEIGHT) },
     });
     const bandId = band.id;
+    // Player Band Characters
     for (let i = 0; i < 3; i++) {
       const race = randomChoice(
         [Race.Human, Race.Elf, Race.Dwarf],
@@ -104,6 +148,8 @@ export function setupG(
       items.Kingsfoil({ bandId });
     }
   }
+
+  // Log
   create<TurnLog>(G, "log#0", {
     turn: 0,
     log: [
@@ -114,6 +160,5 @@ export function setupG(
     ],
   });
 
-  create<Item>(G, "items", { name: "Control Item", type: "consumable" });
   return G;
 }

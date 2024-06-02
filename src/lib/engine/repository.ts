@@ -1,3 +1,4 @@
+import equal from "fast-deep-equal";
 import ShortUniqueId from "short-unique-id";
 
 const uid = new ShortUniqueId();
@@ -99,7 +100,7 @@ export function filter<T extends Entity>(
   if (typeof pred === "object") {
     filterFn = (entity) => {
       for (const key in pred) {
-        if (entity[key] != pred[key]) {
+        if (!equal(entity[key], pred[key])) {
           return false;
         }
       }

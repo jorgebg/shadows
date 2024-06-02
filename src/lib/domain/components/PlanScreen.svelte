@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { Character } from "@domain/entities/character";
   import { TaskList } from "@domain/entities/task";
   import { AssignTask } from "@domain/moves/campaign";
   import { type GameState } from "@domain/state";
@@ -25,7 +24,7 @@
   </Head>
   <Body>
     {#each Object.entries(G.assignments) as [memberId, taskId] (memberId)}
-      {@const member = get < Character > (G, memberId)}
+      {@const member = get(G, memberId)}
       {@const task = find(TaskList, taskId)}
       <Row>
         <Cell>{member.name}:<br />{task.name}</Cell>
