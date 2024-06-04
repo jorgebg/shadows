@@ -1,4 +1,5 @@
 import { create } from "@engine/repository";
+import { fillArray, padArray } from "@engine/utils/array";
 import { randomChoice, randomInt } from "@engine/utils/random";
 import { titleize } from "@engine/utils/string";
 import { randomSpeciesColorSet } from "@icons/species";
@@ -40,8 +41,8 @@ export function setupG(
   });
   // Regions
   const cells: Point[] = [];
-  for (let x = 0; x < world.WIDTH; x++) {
-    for (let y = 0; y < world.HEIGHT; y++) {
+  for (let y = 0; y < world.HEIGHT; y++) {
+    for (let x = 0; x < world.WIDTH; x++) {
       const cell = { x, y };
       cells.push({ x, y });
       create<Region>(G, getRegionId(cell), {
@@ -52,18 +53,43 @@ export function setupG(
   }
   // Locations
   const locationTypePool: LocationType[] = [
-    ...new Array(cells.length).fill(LocationTypeMap.TOWN),
-    ...new Array(cells.length).fill(LocationTypeMap.DEEP_FOREST),
+    ...random.Shuffle(
+      padArray(cells.length, [
+        ...fillArray(cells.length / 2, LocationTypeMap.TOWN),
+        ...fillArray(cells.length / 4, LocationTypeMap.CITY),
+      ]),
+    ),
+    ...random.Shuffle(
+      padArray(cells.length, [
+        ...fillArray(cells.length / 3, LocationTypeMap.FOREST),
+        ...fillArray(cells.length / 3, LocationTypeMap.DEEP_FOREST),
+        ...fillArray(cells.length / 4, LocationTypeMap.MOUNTAIN),
+        ...fillArray(cells.length / 9, LocationTypeMap.SNOW_MOUNTAIN),
+      ]),
+    ),
+    ...random.Shuffle(
+      padArray(cells.length, [
+        ...fillArray(cells.length / 4, LocationTypeMap.RIVER),
+      ]),
+    ),
+    ...random.Shuffle(
+      padArray(cells.length, [
+        ...fillArray(cells.length / 6, LocationTypeMap.RUINS),
+      ]),
+    ),
   ].reverse();
   const locations: Location[] = [];
-  let locationIndex = 0;
+  let locationIndex = randomInt(0, cells.length - 1, random.Number);
   while (locationTypePool.length > 0) {
-    locations.push(
-      create<Location>(G, "locations", {
-        cell: cells[locationIndex % cells.length],
-        typeId: locationTypePool.pop().id,
-      }),
-    );
+    const type = locationTypePool.pop();
+    if (type) {
+      locations.push(
+        create<Location>(G, "locations", {
+          cell: cells[locationIndex % cells.length],
+          typeId: type.id,
+        }),
+      );
+    }
     locationIndex++;
   }
 
