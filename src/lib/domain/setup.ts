@@ -13,30 +13,21 @@ import type { Location } from "./entities/location";
 import {
   LocationTypeMap,
   getRegionId,
+  getWorldMapId,
   type LocationType,
   type Region,
 } from "./entities/location";
 import { type Map, type Point } from "./entities/map";
-import { CardinalPointsGrid, generateRegion } from "./entities/region";
 import { type GameState } from "./state";
 
 export function setupG(
   { ctx, random, ...plugins }: { ctx: Ctx; random: RandomAPI },
   setupData: any,
 ): GameState {
-  const oldRegions = [];
-  for (let x = 0; x < CardinalPointsGrid.length; x++) {
-    const lat = CardinalPointsGrid[x];
-    for (let y = 0; y < lat.length; y++) {
-      oldRegions.push(generateRegion({ x, y }));
-    }
-  }
-  const currentRegionId = randomChoice(oldRegions).id;
-
   const assignments = {};
 
   const G = {} as GameState;
-  Object.assign(G, { currentRegionId, regions: oldRegions, assignments });
+  Object.assign(G, { assignments });
   //---
   const items = new ItemFactory(G, "items");
   // World map
@@ -44,7 +35,9 @@ export function setupG(
     WIDTH: 3,
     HEIGHT: 3,
   };
-  create<Map>(G, "maps#world", { size: { x: world.WIDTH, y: world.HEIGHT } });
+  create<Map>(G, getWorldMapId(), {
+    size: { x: world.WIDTH, y: world.HEIGHT },
+  });
   // Regions
   const cells: Point[] = [];
   for (let x = 0; x < world.WIDTH; x++) {
@@ -79,7 +72,10 @@ export function setupG(
     const playerId = nPlayer.toString();
     const band = create<Band>(G, getPlayerBandId(playerId), {
       playerId: playerId.toString(),
-      cell: { x: randomInt(0, world.WIDTH), y: randomInt(0, world.HEIGHT) },
+      cell: {
+        x: randomInt(0, world.WIDTH - 1),
+        y: randomInt(0, world.HEIGHT - 1),
+      },
     });
     const bandId = band.id;
     // Player Band Characters

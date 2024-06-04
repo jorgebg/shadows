@@ -11,7 +11,7 @@ import { getCurrentPlayerBandMembers, power } from "./entities/character";
 import { EquipmentSlotList, equipped } from "./entities/equipment";
 import type { TurnLog } from "./entities/event";
 import type { Item } from "./entities/item";
-import { getRegionIcons } from "./entities/region";
+import { getCellIcons, type Region } from "./entities/location";
 import { TaskList } from "./entities/task";
 import {
   AssignTask,
@@ -60,10 +60,10 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         description: "Map of regions",
         icon: "signpost",
         component: TravelScreen,
-        children: G.regions.map((region) => ({
+        children: getAll<Region>(G, "regions").map((region) => ({
           code: "region",
           name: region.name,
-          description: getRegionIcons(region),
+          description: getCellIcons(G, region.cell),
           args: { region },
           hidden: true,
           children: [

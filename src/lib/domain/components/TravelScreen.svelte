@@ -1,19 +1,23 @@
 <script lang="ts">
+  import { getCurrentPlayerBand } from "@domain/entities/bands";
   import {
-    getRegionIcons,
-    travellable,
+    getCellIcons,
+    getCellLocations,
+    getWorldMap,
     type Region,
-  } from "@domain/entities/region";
+  } from "@domain/entities/location";
+  import { travellable } from "@domain/entities/map";
   import { type GameState } from "@domain/state";
   import NestedList from "@engine/components/utils/NestedList.svelte";
-  import { find } from "@engine/entities";
   import { OptionID } from "@engine/options";
+  import { get, getAll } from "@engine/repository";
   import { selectionIDs } from "@engine/screen";
   import Button, { Label } from "@smui/button";
   import Card from "@smui/card";
   import { classMap } from "@smui/common/internal";
   import type { _ClientImpl } from "boardgame.io/dist/types/src/client/client";
   import { type Ctx } from "boardgame.io/src/types";
+  import equals from "fast-deep-equal";
   import { derived } from "svelte/store";
 
   export let G: GameState;
@@ -22,30 +26,35 @@
 
   const selectedRegion = derived(
     selectionIDs,
-    ($ids) => {
-      if ($ids.length > 1) {
-        const regionID = $ids[1].split(":")[1];
-        return find<Region>(G.regions, regionID);
+    ($optionIds) => {
+      if ($optionIds.length > 1) {
+        const regionId = OptionID.parse(...$optionIds).args.get("region");
+        return get<Region>(G, regionId);
       } else {
         return undefined;
       }
     },
     undefined,
   );
+
+  function getRegions(G: GameState): Region[] {
+    return getAll<Region>(G, "regions");
+  }
+  $: band = getCurrentPlayerBand({ G, ctx });
 </script>
 
 <div class="region-map">
-  {#each G.regions as region (region.id)}
+  {#each getRegions(G) as region (region.id)}
     <Button
-      color={G.currentRegionId == region.id ? "secondary" : "primary"}
+      color={equals(band.cell, region.cell) ? "secondary" : "primary"}
       class={classMap({
         region: true,
-        travellable: travellable({ G, ctx }, region),
+        travellable: travellable(getWorldMap(G), band.cell, region.cell),
       })}
       variant="outlined"
       on:click={(e) => {
-        $selectionIDs = ["travel", OptionID("region", { region })];
-      }}><Label>{getRegionIcons(region)}</Label></Button
+        $selectionIDs = ["travel", OptionID.build("region", { region })];
+      }}><Label>{getCellIcons(G, region.cell)}</Label></Button
     >
   {/each}
 </div>
@@ -54,7 +63,7 @@
   <Card padded>
     <NestedList
       name="Locations"
-      children={$selectedRegion.locations}
+      children={getCellLocations(G, $selectedRegion.cell)}
       ignoredKeys={["id", "region"]}
     />
   </Card>

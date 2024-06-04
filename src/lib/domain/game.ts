@@ -1,7 +1,5 @@
-import { find } from "@engine/entities";
-import { initials } from "@engine/utils/string";
 import type { Ctx, Game } from "boardgame.io";
-import { type Region } from "./entities/region";
+import { getCurrentPlayerRegion } from "./entities/location";
 import { getAllMoves } from "./moves";
 import { type GameState } from "./state";
 
@@ -22,7 +20,7 @@ export function statusBar(state: { G: GameState; ctx: Ctx }) {
     { label: "Day", value: ctx.turn },
     {
       label: "Region",
-      value: initials(find<Region>(G.regions, G.currentRegionId).name),
+      value: getCurrentPlayerRegion(state).name,
     },
   ];
 }

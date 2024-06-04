@@ -1,6 +1,8 @@
 import type { GameState } from "@domain/state";
-import { filter, type Entity } from "@engine/repository";
-import type { Point } from "./map";
+import { filter, get, type Entity } from "@engine/repository";
+import type { SimpleState } from "@engine/state";
+import { getCurrentPlayerBand } from "./bands";
+import type { Map, Point } from "./map";
 
 export interface LocationType {
   id: keyof typeof LocationTypeMap;
@@ -33,26 +35,24 @@ export function getRegionId({ x, y }: Point) {
   return `regions#${x},${y}`;
 }
 
+export function getCurrentPlayerRegion(state: SimpleState): Region {
+  return get<Region>(state.G, getRegionId(getCurrentPlayerBand(state).cell));
+}
+
+export function getCellLocations(G: GameState, cell: Point): Location[] {
+  return filter<Location>(G, "locations", { cell });
+}
 export function getCellIcons(G: GameState, cell: Point): string {
-  return filter<Location>(G, "locations", { cell }).reduce(
+  return getCellLocations(G, cell).reduce(
     (icons, location) => icons + LocationTypeMap[location.typeId].icon,
     "",
   );
 }
 
-// export function travellable(
-//   { G, ctx }: SimpleState<GameState>,
-//   location: Location,
-// ) {
-//   //WIP
-//   const currentRegion = find<Region>(G.regions, G.currentRegionId);
+export function getWorldMapId() {
+  return "maps#world";
+}
 
-//   return (
-//     new Grid(3, 3)
-//       .getNeighbors(
-//         { ...currentRegion.point, walkable: true },
-//         DiagonalMovement.Always,
-//       )
-//       .filter((v) => v.x == region.point.x && v.y == region.point.y).length > 0
-//   );
-// }
+export function getWorldMap(G: GameState): Map {
+  return get<Map>(G, getWorldMapId());
+}

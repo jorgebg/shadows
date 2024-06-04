@@ -28,15 +28,27 @@ export interface Option<GS = any> {
   setup?: <GS>(state: SimpleState<GS>, option: Option<GS>) => void;
 }
 
-export function OptionID(code: Option["code"], args?: Option["args"]) {
-  if (args === undefined || Object.keys(args).length == 0) {
-    return code;
+export class OptionID extends String {
+  public code: Option["code"];
+  public args?: Option["args"];
+
+  static build(code: Option["code"], args?: Option["args"]): string {
+    if (args === undefined || Object.keys(args).length == 0) {
+      return code;
+    }
+    const normalizedArgs = Object.entries(args)
+      .sort()
+      .map(([k, v]) => [k, v.id || v]);
+    const argsStr = new URLSearchParams(normalizedArgs).toString();
+    return `${code}?${argsStr}`;
   }
-  const normalizedArgs = Object.entries(args)
-    .sort()
-    .map(([k, v]) => [k, v.id || v]);
-  const argsStr = new URLSearchParams(normalizedArgs).toString();
-  return `${code}?${argsStr}`;
+  static parse(...optionIds: string[]) {
+    const id = new OptionID(optionIds[optionIds.length - 1]);
+    const [code, argStr] = id.split("?");
+    id.code = code;
+    id.args = new URLSearchParams(argStr);
+    return id;
+  }
 }
 
 export function defaultSetup<GS = any>(
@@ -50,7 +62,7 @@ export function defaultSetup<GS = any>(
   }
   node.code ??= `level_${node.level}`;
   node.name ??= titleize(node.code.replaceAll(/[-_]+/gi, " ").toLowerCase());
-  node.id ??= OptionID(node.code, node.args);
+  node.id ??= OptionID.build(node.code, node.args).toString();
   if (node.children) {
     node.children = new OptionTree(...node.children).setup(state, node);
   }

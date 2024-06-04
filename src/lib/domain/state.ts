@@ -7,14 +7,14 @@ import type { Task } from "./entities/task";
 
 export interface GameState {
   // Old entities pattern
-  currentRegionId: string;
-  regions: Region[];
-  items: Item[];
   assignments: {
     [key: string]: Task["id"];
   };
   // New repository pattern
   maps: Record<string, Map>;
+  regions: Record<string, Region>;
+  locations: Record<string, Location>;
   bands: Record<string, Band>;
-  events: Record<string, TurnLog>;
+  items: Item[];
+  log: Record<string, TurnLog>;
 }

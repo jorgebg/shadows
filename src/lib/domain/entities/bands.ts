@@ -1,3 +1,5 @@
+import { get } from "@engine/repository";
+import type { SimpleState } from "@engine/state";
 import type { Ctx, PlayerID } from "boardgame.io";
 import type { VisualEntity } from "./base";
 import type { Point } from "./map";
@@ -14,4 +16,8 @@ export function getPlayerBandId(id: PlayerID) {
 
 export function getCurrentPlayerBandId(ctx: Ctx) {
   return getPlayerBandId(ctx.currentPlayer);
+}
+
+export function getCurrentPlayerBand({ G, ctx }: SimpleState): Band {
+  return get<Band>(G, getCurrentPlayerBandId(ctx));
 }
