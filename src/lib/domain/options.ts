@@ -8,8 +8,6 @@ import PlanScreen from "./components/PlanScreen.svelte";
 import TravelScreen from "./components/TravelScreen.svelte";
 import { getCurrentBand } from "./entities/bands";
 import { getCurrentBandMembers, power } from "./entities/character";
-import { EquipmentSlotList, equipped } from "./entities/equipment";
-import type { TurnLog } from "./entities/event";
 import type { Item } from "./entities/item";
 import {
   getCellIcons,
@@ -17,7 +15,9 @@ import {
   type Location,
   type Region,
 } from "./entities/location";
+import type { TurnLog } from "./entities/log";
 import { TaskTypeMap } from "./entities/task";
+import { EquipmentSlotList, equipped } from "./equipment";
 import {
   AssignTask,
   DisbandMember,

@@ -8,7 +8,6 @@ import {
   equipped,
   type EquipmentSlot,
 } from "@domain/entities/equipment";
-import type { TurnLog } from "@domain/entities/event";
 import { type Item } from "@domain/entities/item";
 import {
   LocationTypeMap,
@@ -17,6 +16,7 @@ import {
   type Location,
   type Region,
 } from "@domain/entities/location";
+import type { TurnLog } from "@domain/entities/log";
 import { travellable } from "@domain/entities/map";
 import { TaskTypeMap, type Task, type TaskType } from "@domain/entities/task";
 import { type Entity } from "@engine/entities";

@@ -8,7 +8,6 @@ import type { RandomAPI } from "boardgame.io/src/plugins/random/random";
 import { human, species } from "fantastical";
 import { getPlayerBandId, type Band } from "./entities/bands";
 import { Race, type Character } from "./entities/character";
-import type { TurnLog } from "./entities/event";
 import { ItemFactory } from "./entities/item";
 import type { Location } from "./entities/location";
 import {
@@ -18,6 +17,7 @@ import {
   type LocationType,
   type Region,
 } from "./entities/location";
+import type { TurnLog } from "./entities/log";
 import { type Map, type Point } from "./entities/map";
 import { type GameState } from "./state";
 

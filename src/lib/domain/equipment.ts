@@ -1,8 +1,8 @@
 import type { GameState } from "@domain/state";
 import type { UIElement } from "@domain/ui";
 import { get } from "@engine/repository";
-import type { Character } from "./character";
-import type { Item, ItemType } from "./item";
+import type { Character } from "./entities/character";
+import type { Item, ItemType } from "./entities/item";
 
 export interface Equipment {
   primary: Item["id"];

@@ -1,9 +1,9 @@
 import { filter, get } from "@engine/repository";
 import type { SimpleState } from "@engine/state";
+import type { Equipment } from "../equipment";
 import type { Band } from "./bands";
 import { getCurrentBandId } from "./bands";
 import type { VisualEntity } from "./base";
-import type { Equipment } from "./equipment";
 import type { Location } from "./location";
 
 export enum Race {
