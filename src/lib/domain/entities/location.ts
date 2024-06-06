@@ -4,6 +4,12 @@ import type { SimpleState } from "@engine/state";
 import { getCurrentPlayerBand } from "./bands";
 import type { Map, Point } from "./map";
 
+export const CardinalPointsGrid = [
+  ["North-West", "North", "North-East"],
+  ["West", "Center", "East"],
+  ["South-West", "South", "South-East"],
+];
+
 export interface LocationType {
   id: keyof typeof LocationTypeMap;
   name: string;
@@ -13,10 +19,8 @@ export interface LocationType {
 export const LocationTypeMap: Record<string, LocationType> = {
   TOWN: { id: "TOWN", name: "Town", icon: "🏘️" },
   CITY: { id: "CITY", name: "City", icon: "🏰" },
-  FOREST: { id: "FOREST", name: "Forest", icon: "🌳" },
-  DEEP_FOREST: { id: "DEEP_FOREST", name: "Deep Forest", icon: "🌲" },
+  FOREST: { id: "FOREST", name: "Forest", icon: "🌲" },
   MOUNTAIN: { id: "MOUNTAIN", name: "Mountain", icon: "⛰️" },
-  SNOW_MOUNTAIN: { id: "SNOW_MOUNTAIN", name: "Snow Mountain", icon: "🏔️" },
   RIVER: { id: "RIVER", name: "River", icon: "🏞️" },
   RUINS: { id: "RUINS", name: "Ruins", icon: "🏚️" },
 } as const;

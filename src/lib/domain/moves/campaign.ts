@@ -1,6 +1,6 @@
 import { getCurrentPlayerBand } from "@domain/entities/bands";
 import {
-  getCurrentPlayerBandMembers,
+  getCurrentBandMembers,
   type Character,
 } from "@domain/entities/character";
 import {
@@ -13,13 +13,14 @@ import { type Item } from "@domain/entities/item";
 import {
   getCurrentPlayerRegion,
   getWorldMap,
+  type Location,
   type Region,
 } from "@domain/entities/location";
 import { travellable } from "@domain/entities/map";
-import { TaskList, type Task } from "@domain/entities/task";
-import { find, type Entity } from "@engine/entities";
+import { TaskTypeMap, type Task, type TaskType } from "@domain/entities/task";
+import { type Entity } from "@engine/entities";
 import { Move } from "@engine/moves";
-import { get, getOrCreate, remove } from "@engine/repository";
+import { EntityId, create, get, getOrCreate, remove } from "@engine/repository";
 import type { State } from "@engine/state";
 import { type GameState } from "../state";
 
@@ -64,20 +65,24 @@ export class Travel extends Move<GameState> {
 
 export class AssignTask extends Move<GameState> {
   declare args: {
-    task?: Task;
+    task?: TaskType;
+    location?: Location;
     member: Character;
   };
   commit(state, args) {
     const { G } = state;
-    const { task, member } = args;
+    const { task, location, member } = args;
+    const charRef = new EntityId(member.id).ref;
     if (task) {
-      G.assignments[member.id] = task.id;
-      const assignedTask = find(TaskList, task.id);
-      logMessage(state, `Assigned ${assignedTask.name} to ${member.name}`);
-    } else if (member.id in G.assignments) {
-      const unassignedTaskId = G.assignments[member.id];
-      const unassignedTask = find(TaskList, unassignedTaskId);
-      delete G.assignments[member.id];
+      create<Task>(G, `tasks#${charRef}`, {
+        typeId: task.id,
+        locationId: location ? location.id : member.locationId,
+        characterId: member.id,
+      });
+      logMessage(state, `Assigned ${task.name} to ${member.name}`);
+    } else {
+      const removed = remove<Task>(G, `tasks#${charRef}`);
+      const unassignedTask = TaskTypeMap[removed.typeId];
       logMessage(
         state,
         `Unassigned ${unassignedTask.name} from ${member.name}`,
@@ -125,7 +130,7 @@ export class EquipItem extends Move<GameState> {
 
   option(state) {
     const { item, member } = this.args;
-    const equippedBy = equipped(getCurrentPlayerBandMembers(state), item.id);
+    const equippedBy = equipped(getCurrentBandMembers(state), item.id);
     const description = equippedBy ? `Equipped by ${equippedBy.name}` : "";
     return {
       ...super.option(state),
@@ -137,7 +142,7 @@ export class EquipItem extends Move<GameState> {
 
   validate(state) {
     const { item, member } = this.args;
-    return !equipped(getCurrentPlayerBandMembers(state), item.id);
+    return !equipped(getCurrentBandMembers(state), item.id);
   }
 }
 
@@ -208,7 +213,7 @@ export class DisbandMember extends Move<GameState> {
     logGenericMove(state, this, args);
   }
   validate(state) {
-    return getCurrentPlayerBandMembers(state).length > 1;
+    return getCurrentBandMembers(state).length > 1;
   }
 }
 
@@ -226,7 +231,7 @@ export class RemoveItem extends Move<GameState> {
   }
   validate(state) {
     const { item } = this.args;
-    return !equipped(getCurrentPlayerBandMembers(state), item.id);
+    return !equipped(getCurrentBandMembers(state), item.id);
   }
 }
 

@@ -3,12 +3,12 @@ import type { TurnLog } from "./entities/event";
 import type { Item } from "./entities/item";
 import type { Map } from "./entities/map";
 import type { Region } from "./entities/region";
-import type { Task } from "./entities/task";
+import type { TaskType } from "./entities/task";
 
 export interface GameState {
   // Old entities pattern
   assignments: {
-    [key: string]: Task["id"];
+    [key: string]: TaskType["id"];
   };
   // New repository pattern
   maps: Record<string, Map>;

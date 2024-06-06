@@ -55,40 +55,35 @@ export function setupG(
   const locationTypePool: LocationType[] = [
     ...random.Shuffle(
       padArray(cells.length, [
-        ...fillArray(cells.length / 2, LocationTypeMap.TOWN),
-        ...fillArray(cells.length / 4, LocationTypeMap.CITY),
+        ...fillArray(cells.length / 1.5, LocationTypeMap.TOWN),
+        ...fillArray(cells.length / 4.5, LocationTypeMap.CITY),
+        ...fillArray(cells.length / 9, LocationTypeMap.RUINS),
       ]),
     ),
     ...random.Shuffle(
       padArray(cells.length, [
-        ...fillArray(cells.length / 3, LocationTypeMap.FOREST),
-        ...fillArray(cells.length / 3, LocationTypeMap.DEEP_FOREST),
-        ...fillArray(cells.length / 4, LocationTypeMap.MOUNTAIN),
-        ...fillArray(cells.length / 9, LocationTypeMap.SNOW_MOUNTAIN),
+        ...fillArray(cells.length / 1.5, LocationTypeMap.FOREST),
+        ...fillArray(cells.length / 3, LocationTypeMap.MOUNTAIN),
       ]),
     ),
     ...random.Shuffle(
       padArray(cells.length, [
-        ...fillArray(cells.length / 4, LocationTypeMap.RIVER),
-      ]),
-    ),
-    ...random.Shuffle(
-      padArray(cells.length, [
-        ...fillArray(cells.length / 6, LocationTypeMap.RUINS),
+        ...fillArray(cells.length / 3, LocationTypeMap.RIVER),
       ]),
     ),
   ].reverse();
-  const locations: Location[] = [];
+  const towns: Location[] = [];
   let locationIndex = randomInt(0, cells.length - 1, random.Number);
   while (locationTypePool.length > 0) {
     const type = locationTypePool.pop();
     if (type) {
-      locations.push(
-        create<Location>(G, "locations", {
-          cell: cells[locationIndex % cells.length],
-          typeId: type.id,
-        }),
-      );
+      const location = create<Location>(G, "locations", {
+        cell: cells[locationIndex % cells.length],
+        typeId: type.id,
+      });
+      if (type == LocationTypeMap.TOWN) {
+        towns.push(location);
+      }
     }
     locationIndex++;
   }
@@ -96,12 +91,10 @@ export function setupG(
   // Player Bands
   for (let nPlayer = 0; nPlayer < ctx.numPlayers; nPlayer++) {
     const playerId = nPlayer.toString();
+    const location = randomChoice<Location>(towns, random.Number);
     const band = create<Band>(G, getPlayerBandId(playerId), {
       playerId: playerId.toString(),
-      cell: {
-        x: randomInt(0, world.WIDTH - 1),
-        y: randomInt(0, world.HEIGHT - 1),
-      },
+      cell: location.cell,
     });
     const bandId = band.id;
     // Player Band Characters
@@ -154,6 +147,7 @@ export function setupG(
       }
       create<Character>(G, "characters", {
         bandId: band.id,
+        locationId: location.id,
         name,
         race,
         icon,

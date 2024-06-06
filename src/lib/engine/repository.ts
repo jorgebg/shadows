@@ -73,9 +73,11 @@ export function getOrCreate<T extends Entity>(
 export function getAll<T extends Entity>(
   R: Repository,
   namespace: string,
-): T[] | undefined {
+): T[] {
   if (namespace in R) {
     return Object.values<T>(R[namespace]);
+  } else {
+    return [];
   }
 }
 
@@ -95,7 +97,7 @@ export function filter<T extends Entity>(
     | Partial<T>
     // | ((v: T, i: number, a: T[]) => boolean)
     | ArrayFilterFnParams,
-): T[] | undefined {
+): T[] {
   let filterFn: ArrayFilterFnParams;
   if (typeof pred === "object") {
     filterFn = (entity) => {
@@ -112,12 +114,14 @@ export function filter<T extends Entity>(
   return getAll<T>(R, namespace).filter(filterFn);
 }
 
-export function remove<T extends Entity>(R: Repository, id: string): boolean {
+export function remove<T extends Entity>(
+  R: Repository,
+  id: string,
+): T | undefined {
   let { namespace, ref } = new EntityId(id);
   if (namespace in R && ref in R[namespace]) {
-    console.log("DELETE", id);
+    const obj = R[namespace][ref];
     delete R[namespace][ref];
-    return true;
+    return obj;
   }
-  return false;
 }

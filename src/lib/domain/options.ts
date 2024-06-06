@@ -7,12 +7,12 @@ import ItemsScreen from "./components/ItemsScreen.svelte";
 import PlanScreen from "./components/PlanScreen.svelte";
 import TravelScreen from "./components/TravelScreen.svelte";
 import { getCurrentPlayerBandId } from "./entities/bands";
-import { getCurrentPlayerBandMembers, power } from "./entities/character";
+import { getCurrentBandMembers, power } from "./entities/character";
 import { EquipmentSlotList, equipped } from "./entities/equipment";
 import type { TurnLog } from "./entities/event";
 import type { Item } from "./entities/item";
 import { getCellIcons, type Region } from "./entities/location";
-import { TaskList } from "./entities/task";
+import { TaskTypeMap } from "./entities/task";
 import {
   AssignTask,
   DisbandMember,
@@ -38,12 +38,12 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         icon: "map",
         component: PlanScreen,
         children: [
-          ...TaskList.map((task) => ({
+          ...Object.values(TaskTypeMap).map((task) => ({
             code: task.id,
             description: task.description,
             icon: task.icon,
             args: { task },
-            children: getCurrentPlayerBandMembers(state).map((member) => ({
+            children: getCurrentBandMembers(state).map((member) => ({
               args: { member },
               move: AssignTask,
             })),
@@ -81,7 +81,7 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         description: "Manage members",
         icon: "groups",
         component: BandScreen,
-        children: getCurrentPlayerBandMembers(state).map((member) => ({
+        children: getCurrentBandMembers(state).map((member) => ({
           code: "select_member",
           name: member.name,
           description: `${titleize(member.race)}, Power ${power(member)}, ${
@@ -121,8 +121,8 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
                     (item) =>
                       item.bandId == bandId &&
                       item.type == slot.type &&
-                      equipped(getCurrentPlayerBandMembers(state), item.id)
-                        ?.id != member.id,
+                      equipped(getCurrentBandMembers(state), item.id)?.id !=
+                        member.id,
                   ).map((item) => ({
                     icon: item.icon,
                     args: { item },
@@ -165,14 +165,14 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
               code: "use",
               icon: "back_hand",
               disabled: item.type != "consumable",
-              children: getCurrentPlayerBandMembers(state).map((member) => ({
+              children: getCurrentBandMembers(state).map((member) => ({
                 args: { member },
                 move: UseItem,
               })),
             },
             (() => {
               const equippedBy = equipped(
-                getCurrentPlayerBandMembers(state),
+                getCurrentBandMembers(state),
                 item.id,
               );
               return confirm({

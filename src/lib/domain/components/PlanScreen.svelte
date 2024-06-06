@@ -1,9 +1,8 @@
 <script lang="ts">
-  import { TaskList } from "@domain/entities/task";
+  import { TaskTypeMap, type Task } from "@domain/entities/task";
   import { AssignTask } from "@domain/moves/campaign";
   import { type GameState } from "@domain/state";
-  import { find } from "@engine/entities";
-  import { get } from "@engine/repository";
+  import { get, getAll } from "@engine/repository";
   import DataTable, { Body, Cell, Head, Row } from "@smui/data-table";
   import IconButton from "@smui/icon-button";
   import type { _ClientImpl } from "boardgame.io/dist/types/src/client/client";
@@ -12,6 +11,9 @@
   export let G: GameState;
   export let ctx: Ctx;
   export let client: _ClientImpl;
+
+  $: tasks = getAll<Task>(G, "tasks");
+  $: console.log(tasks);
 </script>
 
 <DataTable table$aria-label="Assignments list">
@@ -23,14 +25,15 @@
     </Row>
   </Head>
   <Body>
-    {#each Object.entries(G.assignments) as [memberId, taskId] (memberId)}
-      {@const member = get(G, memberId)}
-      {@const task = find(TaskList, taskId)}
+    {#each tasks as task (task.id)}
+      {@const member = get(G, task.characterId)}
+      {@const type = TaskTypeMap[task.typeId]}
       <Row>
-        <Cell>{member.name}:<br />{task.name}</Cell>
+        <Cell>{member.name}:<br />{type.name}</Cell>
         <Cell
           ><IconButton
-            on:click={() => new AssignTask({ task: null, member }).send(client)}
+            on:click={() =>
+              new AssignTask({ task: undefined, member }).send(client)}
             class="material-symbols-outlined"
             >close
           </IconButton></Cell
