@@ -13,9 +13,9 @@ import {
   getCellIcons,
   LocationTypeMap,
   type Location,
-  type Region,
 } from "./entities/location";
 import type { TurnLog } from "./entities/log";
+import { type Region } from "./entities/region";
 import { TaskTypeMap } from "./entities/task";
 import { EquipmentSlotList, equipped } from "./equipment";
 import {
@@ -28,7 +28,7 @@ import {
   UnequipItem,
   UseItem,
   UseSkill,
-} from "./moves/campaign";
+} from "./moves/plan";
 import { type GameState } from "./state";
 
 export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {

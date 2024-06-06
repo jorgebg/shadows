@@ -1,4 +1,5 @@
-import type { Entity } from "@engine/repository";
+import type { GameState } from "@domain/state";
+import { get, type Entity } from "@engine/repository";
 import { DiagonalMovement, Grid } from "pathfinding";
 
 export interface Point {
@@ -16,4 +17,10 @@ export function travellable(map: Map, source: Point, target: Point) {
       .getNeighbors({ ...source, walkable: true }, DiagonalMovement.Always)
       .filter((n) => n.x == target.x && n.y == target.y).length > 0
   );
+}
+export function getWorldMapId() {
+  return "maps#world";
+}
+export function getWorldMap(G: GameState): Map {
+  return get<Map>(G, getWorldMapId());
 }

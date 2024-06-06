@@ -3,32 +3,28 @@ import {
   getCurrentBandMembers,
   type Character,
 } from "@domain/entities/character";
-import {
-  equipment,
-  equipped,
-  type EquipmentSlot,
-} from "@domain/entities/equipment";
 import { type Item } from "@domain/entities/item";
-import {
-  LocationTypeMap,
-  getCurrentBandRegion,
-  getWorldMap,
-  type Location,
-  type Region,
-} from "@domain/entities/location";
+import { LocationTypeMap, type Location } from "@domain/entities/location";
 import type { TurnLog } from "@domain/entities/log";
-import { travellable } from "@domain/entities/map";
-import { TaskTypeMap, type Task, type TaskType } from "@domain/entities/task";
-import { type Entity } from "@engine/entities";
+import { getWorldMap, travellable } from "@domain/entities/map";
+import { getCurrentBandRegion, type Region } from "@domain/entities/region";
+import {
+  TaskTypeMap,
+  getTaskId,
+  type Task,
+  type TaskType,
+} from "@domain/entities/task";
+import { equipment, equipped, type EquipmentSlot } from "@domain/equipment";
 import { Move } from "@engine/moves";
 import {
-  EntityId,
   create,
   filter,
   get,
   getAll,
   getOrCreate,
   remove,
+  removeAll,
+  type Entity,
 } from "@engine/repository";
 import type { State } from "@engine/state";
 import { type GameState } from "../state";
@@ -52,12 +48,13 @@ function logGenericMove(state, move: Move, args: Move["args"]) {
   );
 }
 
-/** Moves for campaign stage */
+/** Moves for plan stage */
 
 export class Travel extends Move<GameState> {
   declare args: { region: Region };
   commit(state, args) {
     getCurrentBand(state).cell = args.region.cell;
+    removeAll<Task>(state.G, "tasks");
     logMessage(state, `Travelled to ${args.region.name}`);
     endTurn(state);
   }
@@ -80,9 +77,9 @@ export class AssignTask extends Move<GameState> {
   commit(state, args) {
     const { G } = state;
     const { task, location, member } = args;
-    const charRef = new EntityId(member.id).ref;
+    const taskId = getTaskId(member);
     if (task && location) {
-      create<Task>(G, `tasks#${charRef}`, {
+      create<Task>(G, taskId, {
         typeId: task.id,
         locationId: location.id,
         characterId: member.id,
@@ -92,7 +89,7 @@ export class AssignTask extends Move<GameState> {
         `Assigned ${task.name} to ${member.name} in ${location.name}`,
       );
     } else {
-      const removed = remove<Task>(G, `tasks#${charRef}`);
+      const removed = remove<Task>(G, taskId);
       const unassignedTask = TaskTypeMap[removed.typeId];
       logMessage(
         state,
@@ -221,9 +218,7 @@ export class DisbandMember extends Move<GameState> {
   commit(state, args) {
     const { member } = args;
     remove(state.G, member.id);
-    if (member.id in state.G.assignments) {
-      delete state.G.assignments[member.id];
-    }
+    remove(state.G, getTaskId(member));
     logGenericMove(state, this, args);
   }
   validate(state) {

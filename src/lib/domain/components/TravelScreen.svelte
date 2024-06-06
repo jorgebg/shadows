@@ -1,12 +1,8 @@
 <script lang="ts">
   import { getCurrentBand } from "@domain/entities/bands";
-  import {
-    getCellIcons,
-    getCellLocations,
-    getWorldMap,
-    type Region,
-  } from "@domain/entities/location";
-  import { travellable } from "@domain/entities/map";
+  import { getCellIcons, getCellLocations } from "@domain/entities/location";
+  import { getWorldMap, travellable } from "@domain/entities/map";
+  import type { Region } from "@domain/entities/region";
   import { type GameState } from "@domain/state";
   import NestedList from "@engine/components/utils/NestedList.svelte";
   import { OptionID } from "@engine/options";

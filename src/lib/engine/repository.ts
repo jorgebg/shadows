@@ -35,6 +35,11 @@ export class EntityId implements LongFormId {
   }
 }
 
+type Predicate<T> =
+  | Partial<T>
+  // | ((v: T, i: number, a: T[]) => boolean)
+  | ArrayFilterFnParams;
+
 export function create<T extends Entity>(
   R: Repository,
   partialId: string,
@@ -93,11 +98,11 @@ type ArrayFilterFnParams = Parameters<typeof Array.prototype.filter>[0];
 export function filter<T extends Entity>(
   R: Repository,
   namespace: string,
-  pred:
-    | Partial<T>
-    // | ((v: T, i: number, a: T[]) => boolean)
-    | ArrayFilterFnParams,
+  pred?: Predicate<T>,
 ): T[] {
+  if (typeof pred === "undefined") {
+    return getAll<T>(R, namespace);
+  }
   let filterFn: ArrayFilterFnParams;
   if (typeof pred === "object") {
     filterFn = (entity) => {
@@ -124,4 +129,17 @@ export function remove<T extends Entity>(
     delete R[namespace][ref];
     return obj;
   }
+}
+
+export function removeAll<T extends Entity>(
+  R: Repository,
+  namespace: string,
+  pred?: Predicate<T>,
+): T[] {
+  const objs = filter<T>(R, namespace, pred);
+  for (const obj of objs) {
+    let { namespace, ref } = new EntityId(obj.id);
+    delete R[namespace][ref];
+  }
+  return objs;
 }

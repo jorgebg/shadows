@@ -1,5 +1,5 @@
 import type { UIElement } from "@domain/ui";
-import type { Entity } from "@engine/repository";
+import { EntityId, type Entity } from "@engine/repository";
 import type { Character } from "./character";
 import type { Location } from "./location";
 
@@ -33,4 +33,8 @@ export interface Task extends Entity {
   typeId: TaskType["id"];
   characterId: Character["id"];
   locationId: Location["id"];
+}
+export function getTaskId(character: Character): Task["id"] {
+  const charRef = new EntityId(character.id).ref;
+  return `tasks#${charRef}`;
 }

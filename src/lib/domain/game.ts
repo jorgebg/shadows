@@ -2,7 +2,8 @@ import type { StatusBarUnit } from "@engine/statusbar";
 import { initials } from "@engine/utils/string";
 import type { Ctx, Game } from "boardgame.io";
 import { getCurrentBand } from "./entities/bands";
-import { CardinalPointsGrid, getCurrentBandRegion } from "./entities/location";
+import { CardinalPointsGrid } from "./entities/location";
+import { getCurrentBandRegion } from "./entities/region";
 import { getAllMoves } from "./moves";
 import { type GameState } from "./state";
 

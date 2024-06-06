@@ -1,8 +1,6 @@
 import type { GameState } from "@domain/state";
-import { filter, get, type Entity } from "@engine/repository";
-import type { SimpleState } from "@engine/state";
-import { getCurrentBand } from "./bands";
-import type { Map, Point } from "./map";
+import { filter, type Entity } from "@engine/repository";
+import type { Point } from "./map";
 
 export const CardinalPointsGrid = [
   ["North-West", "North", "North-East"],
@@ -25,22 +23,9 @@ export const LocationTypeMap: Record<string, LocationType> = {
   RUINS: { id: "RUINS", name: "Ruins", icon: "🏚️" },
 } as const;
 
-export interface Region extends Entity {
-  cell: Point;
-  name: string;
-}
-
 export interface Location extends Entity {
   cell: Point;
   typeId: LocationType["id"];
-}
-
-export function getRegionId({ x, y }: Point) {
-  return `regions#${x},${y}`;
-}
-
-export function getCurrentBandRegion(state: SimpleState): Region {
-  return get<Region>(state.G, getRegionId(getCurrentBand(state).cell));
 }
 
 export function getCellLocations(G: GameState, cell: Point): Location[] {
@@ -51,12 +36,4 @@ export function getCellIcons(G: GameState, cell: Point): string {
     (icons, location) => icons + LocationTypeMap[location.typeId].icon,
     "",
   );
-}
-
-export function getWorldMapId() {
-  return "maps#world";
-}
-
-export function getWorldMap(G: GameState): Map {
-  return get<Map>(G, getWorldMapId());
 }

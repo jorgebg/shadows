@@ -10,25 +10,17 @@ import { getPlayerBandId, type Band } from "./entities/bands";
 import { Race, type Character } from "./entities/character";
 import { ItemFactory } from "./entities/item";
 import type { Location } from "./entities/location";
-import {
-  LocationTypeMap,
-  getRegionId,
-  getWorldMapId,
-  type LocationType,
-  type Region,
-} from "./entities/location";
+import { LocationTypeMap, type LocationType } from "./entities/location";
 import type { TurnLog } from "./entities/log";
-import { type Map, type Point } from "./entities/map";
+import { getWorldMapId, type Map, type Point } from "./entities/map";
+import { getRegionId, type Region } from "./entities/region";
 import { type GameState } from "./state";
 
 export function setupG(
   { ctx, random, ...plugins }: { ctx: Ctx; random: RandomAPI },
   setupData: any,
 ): GameState {
-  const assignments = {};
-
   const G = {} as GameState;
-  Object.assign(G, { assignments });
   //---
   const items = new ItemFactory(G, "items");
   // World map
