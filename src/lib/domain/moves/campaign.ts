@@ -11,6 +11,7 @@ import {
 import type { TurnLog } from "@domain/entities/event";
 import { type Item } from "@domain/entities/item";
 import {
+  LocationTypeMap,
   getCurrentPlayerRegion,
   getWorldMap,
   type Location,
@@ -20,12 +21,19 @@ import { travellable } from "@domain/entities/map";
 import { TaskTypeMap, type Task, type TaskType } from "@domain/entities/task";
 import { type Entity } from "@engine/entities";
 import { Move } from "@engine/moves";
-import { EntityId, create, get, getOrCreate, remove } from "@engine/repository";
+import {
+  EntityId,
+  create,
+  filter,
+  get,
+  getAll,
+  getOrCreate,
+  remove,
+} from "@engine/repository";
 import type { State } from "@engine/state";
 import { type GameState } from "../state";
 
 function endTurn({ G, ctx, events }: State<GameState>) {
-  G.assignments = {};
   events.endTurn();
 }
 
@@ -73,13 +81,16 @@ export class AssignTask extends Move<GameState> {
     const { G } = state;
     const { task, location, member } = args;
     const charRef = new EntityId(member.id).ref;
-    if (task) {
+    if (task && location) {
       create<Task>(G, `tasks#${charRef}`, {
         typeId: task.id,
-        locationId: location ? location.id : member.locationId,
+        locationId: location.id,
         characterId: member.id,
       });
-      logMessage(state, `Assigned ${task.name} to ${member.name}`);
+      logMessage(
+        state,
+        `Assigned ${task.name} to ${member.name} in ${location.name}`,
+      );
     } else {
       const removed = remove<Task>(G, `tasks#${charRef}`);
       const unassignedTask = TaskTypeMap[removed.typeId];
@@ -101,7 +112,10 @@ export class AssignTask extends Move<GameState> {
 
   validate(state) {
     const { task, member } = this.args;
-    return !(task && member.id in state.G.assignments);
+    return !(
+      task &&
+      filter<Task>(state.G, "tasks", { characterId: member.id }).length > 0
+    );
   }
 }
 
@@ -239,9 +253,15 @@ export class StartTasks extends Move<GameState> {
   commit(state, args) {
     const { G } = state;
     logMessage(state, `Starting plan`);
-    for (const [memberID, task] of Object.entries(G.assignments)) {
-      const member = get<Character>(G, memberID);
-      logMessage(state, `${member.name} is performing ${task}`);
+    for (const task of getAll<Task>(G, "tasks")) {
+      const taskType = TaskTypeMap[task.typeId];
+      const member = get<Character>(G, task.characterId);
+      const location = get<Location>(G, task.locationId);
+      const locationType = LocationTypeMap[location.typeId];
+      logMessage(
+        state,
+        `${member.name} is performing ${taskType.name} in ${locationType.name}`,
+      );
     }
     endTurn(state);
   }

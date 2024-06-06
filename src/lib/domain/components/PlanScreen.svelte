@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { TaskTypeMap, type Task } from "@domain/entities/task";
+  import type { Character } from "@domain/entities/character";
+  import {
+    LocationTypeMap,
+    type Location,
+    type LocationType,
+  } from "@domain/entities/location";
+  import { TaskTypeMap, type Task, type TaskType } from "@domain/entities/task";
   import { AssignTask } from "@domain/moves/campaign";
   import { type GameState } from "@domain/state";
   import { get, getAll } from "@engine/repository";
@@ -14,6 +20,18 @@
 
   $: tasks = getAll<Task>(G, "tasks");
   $: console.log(tasks);
+
+  function getMember(characterId: Character["id"]): Character {
+    return get<Character>(G, characterId);
+  }
+  function getTaskType(typeId: Task["typeId"]): TaskType {
+    return TaskTypeMap[typeId];
+  }
+
+  function getLocationType(locationId: Location["id"]): LocationType {
+    const location = get<Location>(G, locationId);
+    return LocationTypeMap[location.typeId];
+  }
 </script>
 
 <DataTable table$aria-label="Assignments list">
@@ -26,10 +44,11 @@
   </Head>
   <Body>
     {#each tasks as task (task.id)}
-      {@const member = get(G, task.characterId)}
-      {@const type = TaskTypeMap[task.typeId]}
+      {@const member = getMember(task.characterId)}
+      {@const taskType = getTaskType(task.typeId)}
+      {@const locationType = getLocationType(task.locationId)}
       <Row>
-        <Cell>{member.name}:<br />{type.name}</Cell>
+        <Cell>{member.name}:<br />{taskType.name} {locationType.name}</Cell>
         <Cell
           ><IconButton
             on:click={() =>
