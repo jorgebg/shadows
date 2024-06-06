@@ -1,12 +1,10 @@
-import type { Icon } from "@engine/icons";
+import type { UIElement } from "@domain/ui";
 import type { Entity } from "@engine/repository";
 import type { Character } from "./character";
 import type { Location } from "./location";
 
-export interface TaskType {
+export interface TaskType extends UIElement {
   id: "explore" | "market" | "recruit";
-  name: string;
-  icon: Icon;
   description: string;
 }
 
