@@ -199,7 +199,7 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         })),
       },
       {
-        code: "events",
+        code: "log",
         description: "History of events",
         icon: "history_edu",
         children: getAll<TurnLog>(G, "log")
