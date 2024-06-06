@@ -6,7 +6,7 @@
     type LocationType,
   } from "@domain/entities/location";
   import { TaskTypeMap, type Task, type TaskType } from "@domain/entities/task";
-  import { AssignTask } from "@domain/moves/campaign";
+  import { AssignTask } from "@domain/moves/plan";
   import { type GameState } from "@domain/state";
   import { get, getAll } from "@engine/repository";
   import DataTable, { Body, Cell, Head, Row } from "@smui/data-table";
