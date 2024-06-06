@@ -1,7 +1,7 @@
 import type { GameState } from "@domain/state";
 import { filter, get, type Entity } from "@engine/repository";
 import type { SimpleState } from "@engine/state";
-import { getCurrentPlayerBand } from "./bands";
+import { getCurrentBand } from "./bands";
 import type { Map, Point } from "./map";
 
 export const CardinalPointsGrid = [
@@ -39,8 +39,8 @@ export function getRegionId({ x, y }: Point) {
   return `regions#${x},${y}`;
 }
 
-export function getCurrentPlayerRegion(state: SimpleState): Region {
-  return get<Region>(state.G, getRegionId(getCurrentPlayerBand(state).cell));
+export function getCurrentBandRegion(state: SimpleState): Region {
+  return get<Region>(state.G, getRegionId(getCurrentBand(state).cell));
 }
 
 export function getCellLocations(G: GameState, cell: Point): Location[] {

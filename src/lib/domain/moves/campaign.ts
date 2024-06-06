@@ -1,4 +1,4 @@
-import { getCurrentPlayerBand } from "@domain/entities/bands";
+import { getCurrentBand } from "@domain/entities/bands";
 import {
   getCurrentBandMembers,
   type Character,
@@ -12,7 +12,7 @@ import type { TurnLog } from "@domain/entities/event";
 import { type Item } from "@domain/entities/item";
 import {
   LocationTypeMap,
-  getCurrentPlayerRegion,
+  getCurrentBandRegion,
   getWorldMap,
   type Location,
   type Region,
@@ -57,7 +57,7 @@ function logGenericMove(state, move: Move, args: Move["args"]) {
 export class Travel extends Move<GameState> {
   declare args: { region: Region };
   commit(state, args) {
-    getCurrentPlayerBand(state).cell = args.region.cell;
+    getCurrentBand(state).cell = args.region.cell;
     logMessage(state, `Travelled to ${args.region.name}`);
     endTurn(state);
   }
@@ -65,7 +65,7 @@ export class Travel extends Move<GameState> {
     const { region } = this.args;
     return travellable(
       getWorldMap(state.G),
-      getCurrentPlayerRegion(state).cell,
+      getCurrentBandRegion(state).cell,
       region.cell,
     );
   }

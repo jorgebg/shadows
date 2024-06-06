@@ -6,7 +6,7 @@ import BandScreen from "./components/BandScreen.svelte";
 import ItemsScreen from "./components/ItemsScreen.svelte";
 import PlanScreen from "./components/PlanScreen.svelte";
 import TravelScreen from "./components/TravelScreen.svelte";
-import { getCurrentPlayerBand } from "./entities/bands";
+import { getCurrentBand } from "./entities/bands";
 import { getCurrentBandMembers, power } from "./entities/character";
 import { EquipmentSlotList, equipped } from "./entities/equipment";
 import type { TurnLog } from "./entities/event";
@@ -34,7 +34,7 @@ import { type GameState } from "./state";
 export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
   const { G, ctx } = state;
   let tree = [];
-  const band = getCurrentPlayerBand(state);
+  const band = getCurrentBand(state);
   if (!ctx.gameover) {
     tree = [
       {

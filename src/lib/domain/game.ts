@@ -1,5 +1,8 @@
+import type { StatusBarUnit } from "@engine/statusbar";
+import { initials } from "@engine/utils/string";
 import type { Ctx, Game } from "boardgame.io";
-import { getCurrentPlayerRegion } from "./entities/location";
+import { getCurrentBand } from "./entities/bands";
+import { CardinalPointsGrid, getCurrentBandRegion } from "./entities/location";
 import { getAllMoves } from "./moves";
 import { type GameState } from "./state";
 
@@ -14,13 +17,25 @@ export function gameConfig(config: Game) {
   };
 }
 
-export function statusBar(state: { G: GameState; ctx: Ctx }) {
+export function statusBar(state: { G: GameState; ctx: Ctx }): StatusBarUnit[] {
   const { G, ctx } = state;
-  return [
-    { label: "Day", value: ctx.turn },
+  const band = getCurrentBand(state);
+  const units: StatusBarUnit[] = [
+    { label: { icon: "calendar_today" }, value: ctx.turn },
     {
-      label: "Region",
-      value: getCurrentPlayerRegion(state).name,
+      label: { icon: "map" },
+      value:
+        getCurrentBandRegion(state).name +
+        " (" +
+        initials(CardinalPointsGrid[band.cell.y][band.cell.x]) +
+        ")",
     },
   ];
+  if (ctx.numPlayers > 1) {
+    units.push({
+      label: { icon: "person" },
+      value: ctx.currentPlayer,
+    });
+  }
+  return units;
 }

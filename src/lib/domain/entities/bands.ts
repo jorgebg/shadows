@@ -14,10 +14,10 @@ export function getPlayerBandId(id: PlayerID) {
   return `bands#player${id}`;
 }
 
-export function getCurrentPlayerBandId(ctx: Ctx) {
+export function getCurrentBandId(ctx: Ctx) {
   return getPlayerBandId(ctx.currentPlayer);
 }
 
-export function getCurrentPlayerBand({ G, ctx }: SimpleState): Band {
-  return get<Band>(G, getCurrentPlayerBandId(ctx));
+export function getCurrentBand({ G, ctx }: SimpleState): Band {
+  return get<Band>(G, getCurrentBandId(ctx));
 }

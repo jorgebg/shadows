@@ -1,7 +1,7 @@
 import { filter, get } from "@engine/repository";
 import type { SimpleState } from "@engine/state";
 import type { Band } from "./bands";
-import { getCurrentPlayerBandId } from "./bands";
+import { getCurrentBandId } from "./bands";
 import type { VisualEntity } from "./base";
 import type { Equipment } from "./equipment";
 import type { Location } from "./location";
@@ -30,6 +30,6 @@ export function power(char: Character) {
 }
 
 export function getCurrentBandMembers({ G, ctx }: SimpleState): Character[] {
-  const band = get<Band>(G, getCurrentPlayerBandId(ctx));
+  const band = get<Band>(G, getCurrentBandId(ctx));
   return filter<Character>(G, "characters", { bandId: band.id });
 }

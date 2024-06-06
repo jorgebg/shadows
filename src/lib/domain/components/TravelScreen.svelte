@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getCurrentPlayerBand } from "@domain/entities/bands";
+  import { getCurrentBand } from "@domain/entities/bands";
   import {
     getCellIcons,
     getCellLocations,
@@ -40,7 +40,7 @@
   function getRegions(G: GameState): Region[] {
     return getAll<Region>(G, "regions");
   }
-  $: band = getCurrentPlayerBand({ G, ctx });
+  $: band = getCurrentBand({ G, ctx });
 </script>
 
 <div class="region-map">

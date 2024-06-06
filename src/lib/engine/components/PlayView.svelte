@@ -34,7 +34,9 @@
         /></IconButton
       >
       {#each manager.statusBar($state) as unit}
-        {#if typeof unit.label === "string"}
+        {#if typeof unit === "string"}
+          <Title>{unit}</Title>
+        {:else if typeof unit.label === "string"}
           <Title>{unit.label}: {unit.value}</Title>
         {:else}
           <Button disabled>
