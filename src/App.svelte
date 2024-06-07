@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getGameAppConfig } from "@domain/config";
+  import { getGameAppConfig } from "@game/config";
   import GameApp from "@engine/components/GameApp.svelte";
   import "./app.scss";
 </script>

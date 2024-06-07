@@ -1,6 +1,6 @@
-import type { GameState } from "@domain/state";
-import type { UIElement } from "@domain/ui";
 import { create, type Entity } from "@engine/repository";
+import type { GameState } from "@game/state";
+import type { UIElement } from "@game/ui";
 
 export interface VisualEntity extends Entity, UIElement {}
 

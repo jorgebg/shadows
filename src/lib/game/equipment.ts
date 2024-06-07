@@ -1,6 +1,6 @@
-import type { GameState } from "@domain/state";
-import type { UIElement } from "@domain/ui";
 import { get } from "@engine/repository";
+import type { GameState } from "@game/state";
+import type { UIElement } from "@game/ui";
 import type { Character } from "./entities/character";
 import type { Item, ItemType } from "./entities/item";
 

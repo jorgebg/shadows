@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { type GameState } from "@domain/state";
+    import { type GameState } from "@game/state";
     import GenericInfo from "@engine/components/GenericScreen.svelte";
     import { activeOption } from "@engine/screen";
     import type { _ClientImpl } from "boardgame.io/dist/types/src/client/client";

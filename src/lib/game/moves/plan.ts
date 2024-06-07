@@ -1,20 +1,3 @@
-import { getCurrentBand } from "@domain/entities/bands";
-import {
-  getCurrentBandMembers,
-  type Character,
-} from "@domain/entities/character";
-import { type Item } from "@domain/entities/item";
-import { LocationTypeMap, type Location } from "@domain/entities/location";
-import type { TurnLog } from "@domain/entities/log";
-import { getWorldMap, travellable } from "@domain/entities/map";
-import { getCurrentBandRegion, type Region } from "@domain/entities/region";
-import {
-  TaskTypeMap,
-  getTaskId,
-  type Task,
-  type TaskType,
-} from "@domain/entities/task";
-import { equipment, equipped, type EquipmentSlot } from "@domain/equipment";
 import { Move } from "@engine/moves";
 import {
   create,
@@ -27,6 +10,23 @@ import {
   type Entity,
 } from "@engine/repository";
 import type { State } from "@engine/state";
+import { getCurrentBand } from "@game/entities/bands";
+import {
+  getCurrentBandMembers,
+  type Character,
+} from "@game/entities/character";
+import { type Item } from "@game/entities/item";
+import { LocationTypeMap, type Location } from "@game/entities/location";
+import type { TurnLog } from "@game/entities/log";
+import { getWorldMap, travellable } from "@game/entities/map";
+import { getCurrentBandRegion, type Region } from "@game/entities/region";
+import {
+  TaskTypeMap,
+  getTaskId,
+  type Task,
+  type TaskType,
+} from "@game/entities/task";
+import { equipment, equipped, type EquipmentSlot } from "@game/equipment";
 import { type GameState } from "../state";
 
 function endTurn({ G, ctx, events }: State<GameState>) {

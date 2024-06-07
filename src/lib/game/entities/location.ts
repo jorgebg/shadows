@@ -1,5 +1,5 @@
-import type { GameState } from "@domain/state";
 import { filter, type Entity } from "@engine/repository";
+import type { GameState } from "@game/state";
 import type { Point } from "./map";
 
 export const CardinalPointsGrid = [

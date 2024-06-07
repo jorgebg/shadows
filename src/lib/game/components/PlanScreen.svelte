@@ -1,13 +1,13 @@
 <script lang="ts">
-  import type { Character } from "@domain/entities/character";
+  import type { Character } from "@game/entities/character";
   import {
     LocationTypeMap,
     type Location,
     type LocationType,
-  } from "@domain/entities/location";
-  import { TaskTypeMap, type Task, type TaskType } from "@domain/entities/task";
-  import { AssignTask } from "@domain/moves/plan";
-  import { type GameState } from "@domain/state";
+  } from "@game/entities/location";
+  import { TaskTypeMap, type Task, type TaskType } from "@game/entities/task";
+  import { AssignTask } from "@game/moves/plan";
+  import { type GameState } from "@game/state";
   import { get, getAll } from "@engine/repository";
   import DataTable, { Body, Cell, Head, Row } from "@smui/data-table";
   import IconButton from "@smui/icon-button";

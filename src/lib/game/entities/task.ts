@@ -1,5 +1,5 @@
-import type { UIElement } from "@domain/ui";
 import { EntityId, type Entity } from "@engine/repository";
+import type { UIElement } from "@game/ui";
 import type { Character } from "./character";
 import type { Location } from "./location";
 

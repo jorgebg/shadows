@@ -1,5 +1,5 @@
-import type { GameState } from "@domain/state";
 import { get, type Entity } from "@engine/repository";
+import type { GameState } from "@game/state";
 import { DiagonalMovement, Grid } from "pathfinding";
 
 export interface Point {
