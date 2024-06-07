@@ -1,4 +1,4 @@
-import { filter, type Entity } from "@engine/repository";
+import { query, type Entity } from "@engine/repository";
 import type { GameState } from "@game/state";
 import type { Point } from "./map";
 
@@ -29,7 +29,7 @@ export interface Location extends Entity {
 }
 
 export function getCellLocations(G: GameState, cell: Point): Location[] {
-  return filter<Location>(G, "locations", { cell });
+  return query<Location>(G, "locations", { cell });
 }
 export function getCellIcons(G: GameState, cell: Point): string {
   return getCellLocations(G, cell).reduce(

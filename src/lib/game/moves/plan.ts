@@ -1,10 +1,9 @@
 import { Move } from "@engine/moves";
 import {
   create,
-  filter,
   get,
-  getAll,
   getOrCreate,
+  query,
   remove,
   removeAll,
   type Entity,
@@ -78,6 +77,7 @@ export class AssignTask extends Move<GameState> {
     const { G } = state;
     const { task, location, member } = args;
     const taskId = getTaskId(member);
+    const locationType = LocationTypeMap[location.typeId];
     if (task && location) {
       create<Task>(G, taskId, {
         typeId: task.id,
@@ -86,7 +86,7 @@ export class AssignTask extends Move<GameState> {
       });
       logMessage(
         state,
-        `Assigned ${task.name} to ${member.name} in ${location.name}`,
+        `Assigned ${task.name} to ${member.name} in ${locationType.name}`,
       );
     } else {
       const removed = remove<Task>(G, taskId);
@@ -111,7 +111,7 @@ export class AssignTask extends Move<GameState> {
     const { task, member } = this.args;
     return !(
       task &&
-      filter<Task>(state.G, "tasks", { characterId: member.id }).length > 0
+      query<Task>(state.G, "tasks", { characterId: member.id }).length > 0
     );
   }
 }
@@ -248,7 +248,7 @@ export class StartTasks extends Move<GameState> {
   commit(state, args) {
     const { G } = state;
     logMessage(state, `Starting plan`);
-    for (const task of getAll<Task>(G, "tasks")) {
+    for (const task of query<Task>(G, "tasks")) {
       const taskType = TaskTypeMap[task.typeId];
       const member = get<Character>(G, task.characterId);
       const location = get<Location>(G, task.locationId);

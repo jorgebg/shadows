@@ -1,5 +1,5 @@
 import { confirm, type Option } from "@engine/options";
-import { filter, get, getAll } from "@engine/repository";
+import { get, query } from "@engine/repository";
 import { titleize } from "@engine/utils/string";
 import type { Ctx } from "boardgame.io";
 import BandScreen from "./components/BandScreen.svelte";
@@ -43,7 +43,7 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         icon: "map",
         component: PlanScreen,
         children: [
-          ...filter<Location>(G, "locations", { cell: band.cell }).map(
+          ...query<Location>(G, "locations", { cell: band.cell }).map(
             (location) => ({
               ...LocationTypeMap[location.typeId],
               code: "plan",
@@ -72,7 +72,7 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         description: "Map of regions",
         icon: "signpost",
         component: TravelScreen,
-        children: getAll<Region>(G, "regions").map((region) => ({
+        children: query<Region>(G, "regions").map((region) => ({
           code: "region",
           name: region.name,
           description: getCellIcons(G, region.cell),
@@ -127,7 +127,7 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
                         },
                       ]
                     : []),
-                  ...filter<Item>(
+                  ...query<Item>(
                     G,
                     "items",
                     (item) =>
@@ -167,7 +167,7 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         description: "Use, equip or remove items",
         icon: "shelves",
         component: ItemsScreen,
-        children: filter<Item>(G, "items", { bandId: band.id }).map((item) => ({
+        children: query<Item>(G, "items", { bandId: band.id }).map((item) => ({
           code: "select_item",
           name: item.name,
           icon: item.icon,
@@ -202,7 +202,7 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         code: "log",
         description: "History of events",
         icon: "history_edu",
-        children: getAll<TurnLog>(G, "log")
+        children: query<TurnLog>(G, "log")
           .map((eventLog) => ({
             code: `day_${eventLog.turn}`,
             icon: "calendar_month",

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { get, query } from "@engine/repository";
   import type { Character } from "@game/entities/character";
   import {
     LocationTypeMap,
@@ -8,7 +9,6 @@
   import { TaskTypeMap, type Task, type TaskType } from "@game/entities/task";
   import { AssignTask } from "@game/moves/plan";
   import { type GameState } from "@game/state";
-  import { get, getAll } from "@engine/repository";
   import DataTable, { Body, Cell, Head, Row } from "@smui/data-table";
   import IconButton from "@smui/icon-button";
   import type { _ClientImpl } from "boardgame.io/dist/types/src/client/client";
@@ -18,7 +18,7 @@
   export let ctx: Ctx;
   export let client: _ClientImpl;
 
-  $: tasks = getAll<Task>(G, "tasks");
+  $: tasks = query<Task>(G, "tasks");
   $: console.log(tasks);
 
   function getMember(characterId: Character["id"]): Character {

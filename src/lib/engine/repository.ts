@@ -75,17 +75,6 @@ export function getOrCreate<T extends Entity>(
   return obj;
 }
 
-export function getAll<T extends Entity>(
-  R: Repository,
-  namespace: string,
-): T[] {
-  if (namespace in R) {
-    return Object.values<T>(R[namespace]);
-  } else {
-    return [];
-  }
-}
-
 type ArrayFilterFnParams = Parameters<typeof Array.prototype.filter>[0];
 
 /**
@@ -95,28 +84,32 @@ type ArrayFilterFnParams = Parameters<typeof Array.prototype.filter>[0];
  * @param pred Either a set of attributes to match, or a function for Array.prototype.filter
  * @returns A list of items
  */
-export function filter<T extends Entity>(
+export function query<T extends Entity>(
   R: Repository,
   namespace: string,
   pred?: Predicate<T>,
 ): T[] {
-  if (typeof pred === "undefined") {
-    return getAll<T>(R, namespace);
-  }
-  let filterFn: ArrayFilterFnParams;
-  if (typeof pred === "object") {
-    filterFn = (entity) => {
-      for (const key in pred) {
-        if (!equal(entity[key], pred[key])) {
-          return false;
+  let objects: T[] = [];
+  if (namespace in R) {
+    objects = Object.values<T>(R[namespace]);
+    let filterFn: ArrayFilterFnParams;
+    if (typeof pred === "object") {
+      filterFn = (entity) => {
+        for (const key in pred) {
+          if (!equal(entity[key], pred[key])) {
+            return false;
+          }
         }
-      }
-      return true;
-    };
-  } else {
-    filterFn = pred;
+        return true;
+      };
+    } else if (typeof pred === "function") {
+      filterFn = pred;
+    }
+    if (typeof filterFn !== "undefined") {
+      return objects.filter(filterFn);
+    }
   }
-  return getAll<T>(R, namespace).filter(filterFn);
+  return objects;
 }
 
 export function remove<T extends Entity>(
@@ -136,7 +129,7 @@ export function removeAll<T extends Entity>(
   namespace: string,
   pred?: Predicate<T>,
 ): T[] {
-  const objs = filter<T>(R, namespace, pred);
+  const objs = query<T>(R, namespace, pred);
   for (const obj of objs) {
     let { namespace, ref } = new EntityId(obj.id);
     delete R[namespace][ref];

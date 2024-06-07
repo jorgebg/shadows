@@ -1,13 +1,13 @@
 <script lang="ts">
+  import NestedList from "@engine/components/utils/NestedList.svelte";
+  import { OptionID } from "@engine/options";
+  import { get, query } from "@engine/repository";
+  import { selectionIDs } from "@engine/screen";
   import { getCurrentBand } from "@game/entities/bands";
   import { getCellIcons, getCellLocations } from "@game/entities/location";
   import { getWorldMap, travellable } from "@game/entities/map";
   import type { Region } from "@game/entities/region";
   import { type GameState } from "@game/state";
-  import NestedList from "@engine/components/utils/NestedList.svelte";
-  import { OptionID } from "@engine/options";
-  import { get, getAll } from "@engine/repository";
-  import { selectionIDs } from "@engine/screen";
   import Button, { Label } from "@smui/button";
   import Card from "@smui/card";
   import { classMap } from "@smui/common/internal";
@@ -34,7 +34,7 @@
   );
 
   function getRegions(G: GameState): Region[] {
-    return getAll<Region>(G, "regions");
+    return query<Region>(G, "regions");
   }
   $: band = getCurrentBand({ G, ctx });
 </script>

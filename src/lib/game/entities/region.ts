@@ -13,3 +13,11 @@ export function getRegionId({ x, y }: Point) {
 export function getCurrentBandRegion(state: SimpleState): Region {
   return get<Region>(state.G, getRegionId(getCurrentBand(state).cell));
 }
+
+// WIP Start Refactor here
+// class Regions extends EntityManager {
+//  static id(region) {
+//    if (region.cell)
+//    return `regions#${region.cell.x},${region.cell.y}`
+//}
+//}
