@@ -167,36 +167,41 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         description: "Use, equip or remove items",
         icon: "shelves",
         component: ItemsScreen,
-        children: query<Item>(G, "items", { bandId: band.id }).map((item) => ({
-          code: "select_item",
-          name: item.name,
-          icon: item.icon,
-          args: { item },
-          children: [
-            {
-              code: "use",
-              icon: "back_hand",
-              disabled: item.type != "consumable",
-              children: getCurrentBandMembers(state).map((member) => ({
-                args: { member },
-                move: UseItem,
-              })),
-            },
-            (() => {
-              const equippedBy = equipped(
-                getCurrentBandMembers(state),
-                item.id,
-              );
-              return confirm({
-                code: "drop",
-                icon: "close",
-                disabled: !!equippedBy,
-                description: equippedBy ? `Equipped by ${equippedBy.name}` : "",
-                move: RemoveItem,
-              });
-            })(),
-          ],
-        })),
+        children: query<Item>(G, "items", { bandId: band.id })
+          .sort((item) => (item.type === "consumable" ? -1 : 1))
+          .map((item) => ({
+            code: "select_item",
+            name: item.name,
+            category: item.type === "consumable" ? "Consumable" : "Equipment",
+            icon: item.icon,
+            args: { item },
+            children: [
+              {
+                code: "use",
+                icon: "back_hand",
+                disabled: item.type != "consumable",
+                children: getCurrentBandMembers(state).map((member) => ({
+                  args: { member },
+                  move: UseItem,
+                })),
+              },
+              (() => {
+                const equippedBy = equipped(
+                  getCurrentBandMembers(state),
+                  item.id,
+                );
+                return confirm({
+                  code: "drop",
+                  icon: "close",
+                  disabled: !!equippedBy,
+                  description: equippedBy
+                    ? `Equipped by ${equippedBy.name}`
+                    : "",
+                  move: RemoveItem,
+                });
+              })(),
+            ],
+          })),
       },
       {
         code: "log",
