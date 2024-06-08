@@ -34,7 +34,7 @@ function endTurn({ G, ctx, events }: State<GameState>) {
 
 function logMessage({ G, ctx }: State<GameState>, message: string) {
   const id = `log#${ctx.turn}`;
-  let eventLog = getOrCreate<TurnLog>(G, id, { turn: ctx.turn, log: [] });
+  let eventLog = getOrCreate<TurnLog>(G, id, { number: ctx.turn, log: [] });
   eventLog.log.push({ playerId: ctx.currentPlayer, message });
 }
 

@@ -203,15 +203,17 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         description: "History of events",
         icon: "history_edu",
         children: query<TurnLog>(G, "log")
-          .map((eventLog) => ({
-            code: `day_${eventLog.turn}`,
-            icon: "calendar_month",
-            children: eventLog.log.map((line, i) => ({
-              code: i,
-              name: line.message,
-              icon: false,
-            })),
-          }))
+          .reduce((logs, turn) => {
+            logs.push(
+              ...turn.log.map((line, i) => ({
+                id: `day_${turn.number}_${i}`,
+                name: line.message,
+                icon: false,
+                category: `Day ${turn.number}`,
+              })),
+            );
+            return logs;
+          }, [])
           .reverse(),
       },
     ];

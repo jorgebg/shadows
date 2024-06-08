@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { GameAppConfig } from "@engine/gameapp";
+  import type { Option } from "@engine/options";
   import Button, {
     Icon as ButtonIcon,
     Label as ButtonLabel,
@@ -35,6 +36,14 @@
   $: infoComponent = $activeOption?.component || activeScreen?.component;
   $: if (import.meta.env.DEV) {
     console.log($activeOption);
+  }
+
+  function changedCategory(option: Option, index: number) {
+    return (
+      option.category &&
+      (index == 0 ||
+        option.category != $activeOption.children[index - 1].category)
+    );
   }
 </script>
 
@@ -96,6 +105,9 @@
               <List class="screen-options-list" twoLine>
                 {#if $activeOption.children.length > 0}
                   {#each $activeOption.children as option, index (option.id)}
+                    {#if changedCategory(option, index)}
+                      <span>{option.category}</span>
+                    {/if}
                     <OptionListItem
                       {option}
                       action={() => nav.select(option)}

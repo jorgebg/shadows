@@ -11,6 +11,7 @@ export interface Option<GS = any> {
   code?: string;
   name?: string;
   description?: string;
+  category?: string;
   hidden?: boolean;
   help?: string;
   header?: string;

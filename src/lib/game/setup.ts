@@ -158,7 +158,7 @@ export function setupG(
 
   // Log
   create<TurnLog>(G, "log#0", {
-    turn: 0,
+    number: 0,
     log: [
       {
         message:
