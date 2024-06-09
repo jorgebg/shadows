@@ -2,13 +2,13 @@ import { Move } from "@engine/moves";
 import {
   create,
   get,
-  getOrCreate,
   query,
   remove,
   removeAll,
   type Entity,
 } from "@engine/repository";
 import type { State } from "@engine/state";
+import { repr } from "@engine/utils/string";
 import { getCurrentBand } from "@game/entities/bands";
 import {
   getCurrentBandMembers,
@@ -16,7 +16,7 @@ import {
 } from "@game/entities/character";
 import { type Item } from "@game/entities/item";
 import { LocationTypeMap, type Location } from "@game/entities/location";
-import type { TurnLog } from "@game/entities/log";
+import { TurnLogs } from "@game/entities/log";
 import { getWorldMap, travellable } from "@game/entities/map";
 import { getCurrentBandRegion, type Region } from "@game/entities/region";
 import {
@@ -33,8 +33,7 @@ function endTurn({ G, ctx, events }: State<GameState>) {
 }
 
 function logMessage({ G, ctx }: State<GameState>, message: string) {
-  const id = `log#${ctx.turn}`;
-  let eventLog = getOrCreate<TurnLog>(G, id, { number: ctx.turn, log: [] });
+  let eventLog = new TurnLogs(G).getOrCreate({ number: ctx.turn, log: [] });
   eventLog.log.push({ playerId: ctx.currentPlayer, message });
 }
 
@@ -42,7 +41,7 @@ function logGenericMove(state, move: Move, args: Move["args"]) {
   logMessage(
     state,
     `Move: ${move.name} ${Object.values<Entity>(args)
-      .map((e) => e.name)
+      .map((e) => repr(e))
       .join(", ")}`,
   );
 }

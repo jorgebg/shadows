@@ -11,7 +11,7 @@ import { Race, type Character } from "./entities/character";
 import { ItemFactory } from "./entities/item";
 import type { Location } from "./entities/location";
 import { LocationTypeMap, type LocationType } from "./entities/location";
-import type { TurnLog } from "./entities/log";
+import { TurnLogs } from "./entities/log";
 import { getWorldMapId, type Map, type Point } from "./entities/map";
 import { Regions } from "./entities/region";
 import { type GameState } from "./state";
@@ -157,7 +157,7 @@ export function setupG(
   }
 
   // Log
-  create<TurnLog>(G, "log#0", {
+  new TurnLogs(G).create({
     number: 0,
     log: [
       {

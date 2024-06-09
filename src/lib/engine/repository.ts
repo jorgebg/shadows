@@ -57,6 +57,7 @@ export class EntityManager<T extends Entity> {
     if (ref) {
       return new EntityId({ namespace: this.namespace, ref });
     }
+    return new EntityId({ namespace: this.namespace, ref: undefined });
   }
 
   create(obj: Partial<T>): T {

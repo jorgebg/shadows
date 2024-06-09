@@ -14,7 +14,7 @@ import {
   LocationTypeMap,
   type Location,
 } from "./entities/location";
-import type { TurnLog } from "./entities/log";
+import { TurnLogs } from "./entities/log";
 import { Regions } from "./entities/region";
 import { TaskTypeMap } from "./entities/task";
 import { EquipmentSlotList, equipped } from "./equipment";
@@ -207,7 +207,9 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         code: "log",
         description: "History of events",
         icon: "history_edu",
-        children: query<TurnLog>(G, "log")
+        children: new TurnLogs(G)
+          .query()
+          .sort((a, b) => (a.number > b.number ? 1 : -1))
           .reduce((logs, turn) => {
             logs.push(
               ...turn.log.map((line, i) => ({
