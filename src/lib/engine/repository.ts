@@ -35,6 +35,66 @@ export class EntityId implements LongFormId {
   }
 }
 
+export class EntityManager<T extends Entity> {
+  constructor(protected R: Repository) {
+    this.R[this.namespace] ??= {};
+  }
+
+  get namespace(): string {
+    return this.constructor.name;
+  }
+
+  ref(obj: Partial<T>): string | undefined {
+    // Overriden by derived classes if needed
+    return;
+  }
+
+  id(obj: Partial<T>): EntityId {
+    if ("id" in obj) {
+      return new EntityId(obj["id"]);
+    }
+    const ref = this.ref(obj);
+    if (ref) {
+      return new EntityId({ namespace: this.namespace, ref });
+    }
+  }
+
+  create(obj: Partial<T>): T {
+    const id = this.id(obj);
+    id.namespace ||= this.namespace;
+    id.ref ||= uid.rnd();
+    obj.id = id.toString();
+    return create<T>(this.R, obj.id, obj);
+  }
+
+  get(obj: Partial<T>): T | undefined {
+    const id = this.id(obj);
+    return get<T>(this.R, id.toString());
+  }
+
+  getOrCreate(obj: Partial<T>): T {
+    const id = this.id(obj);
+    return getOrCreate(this.R, id.toString(), obj);
+  }
+
+  query(pred?: Predicate<T>): T[] {
+    return query<T>(this.R, this.namespace, pred);
+  }
+
+  remove(obj: Partial<T>): T | undefined {
+    const id = this.id(obj);
+    return remove<T>(this.R, id.toString());
+  }
+
+  removeAll(pred?: Predicate<T>): T[] {
+    return removeAll<T>(this.R, this.namespace, pred);
+  }
+
+  related(obj: Partial<T>): any {
+    return related<T>(this.R, obj);
+  }
+}
+
 type Predicate<T> =
   | Partial<T>
   // | ((v: T, i: number, a: T[]) => boolean)
@@ -46,7 +106,7 @@ export function create<T extends Entity>(
   obj: Partial<T>,
 ): T {
   let id = new EntityId(partialId);
-  id.ref ??= uid.rnd();
+  id.ref ||= uid.rnd();
   obj.id = id.toString();
   R[id.namespace] ??= {};
   R[id.namespace][id.ref] = obj;
@@ -135,4 +195,13 @@ export function removeAll<T extends Entity>(
     delete R[namespace][ref];
   }
   return objs;
+}
+
+export function related<T extends Entity>(R: Repository, obj: Partial<T>): any {
+  return Object.entries(obj).reduce((rel, [key, value]) => {
+    if (key.endsWith("Id") && value.indexOf(ID_SEPARATOR) >= 0) {
+      rel[key] = get(this.R, value);
+    }
+    return [key, rel[key]];
+  }, {});
 }

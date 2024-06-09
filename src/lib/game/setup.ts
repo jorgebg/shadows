@@ -13,7 +13,7 @@ import type { Location } from "./entities/location";
 import { LocationTypeMap, type LocationType } from "./entities/location";
 import type { TurnLog } from "./entities/log";
 import { getWorldMapId, type Map, type Point } from "./entities/map";
-import { getRegionId, type Region } from "./entities/region";
+import { Regions } from "./entities/region";
 import { type GameState } from "./state";
 
 export function setupG(
@@ -37,7 +37,7 @@ export function setupG(
     for (let x = 0; x < world.WIDTH; x++) {
       const cell = { x, y };
       cells.push({ x, y });
-      create<Region>(G, getRegionId(cell), {
+      new Regions(G).create({
         cell,
         name: human({ allowMultipleNames: false }),
       });

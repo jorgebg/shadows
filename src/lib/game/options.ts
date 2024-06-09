@@ -15,7 +15,7 @@ import {
   type Location,
 } from "./entities/location";
 import type { TurnLog } from "./entities/log";
-import { type Region } from "./entities/region";
+import { Regions } from "./entities/region";
 import { TaskTypeMap } from "./entities/task";
 import { EquipmentSlotList, equipped } from "./equipment";
 import {
@@ -72,7 +72,7 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         description: "Map of regions",
         icon: "signpost",
         component: TravelScreen,
-        children: query<Region>(G, "regions").map((region) => ({
+        children: new Regions(G).query().map((region) => ({
           code: "region",
           name: region.name,
           description: getCellIcons(G, region.cell),
