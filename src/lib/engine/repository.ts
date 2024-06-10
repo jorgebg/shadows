@@ -37,21 +37,23 @@ export class EntityId implements LongFormId {
   }
 }
 
-export class EntityManager<T extends Entity> {
+export class EntityManager<E extends Entity, ER = {}> {
   constructor(protected R: Repository) {
-    this.R[this.namespace] ??= {};
+    if (Object.isExtensible(this.R)) {
+      this.R[this.namespace] ??= {};
+    }
   }
 
   get namespace(): string {
-    return this.constructor.name;
+    return this.constructor.name.toLocaleLowerCase();
   }
 
-  ref(obj: Partial<T>): string | undefined {
+  ref(obj: Partial<E>): string | undefined {
     // Overriden by derived classes if needed
     return;
   }
 
-  id(obj: Partial<T>): EntityId {
+  id(obj: Partial<E>): EntityId {
     let id: EntityId;
     id = new EntityId(obj["id"]);
     id.namespace ||= this.namespace;
@@ -59,78 +61,78 @@ export class EntityManager<T extends Entity> {
     return id;
   }
 
-  create(obj: Partial<T>): T {
+  create(obj: Partial<E>): E {
     const id = this.id(obj);
     id.namespace ||= this.namespace;
     id.ref ||= uid.rnd();
     obj.id = id.toString();
-    return create<T>(this.R, obj.id, obj);
+    return create<E>(this.R, obj.id, obj);
   }
 
-  get(obj: Partial<T>): T | undefined {
+  get(obj: Partial<E>): E | undefined {
     const id = this.id(obj);
-    return get<T>(this.R, id.toString());
+    return get<E>(this.R, id.toString());
   }
 
-  getOrCreate(obj: Partial<T>): T {
+  getOrCreate(obj: Partial<E>): E {
     const id = this.id(obj);
     return getOrCreate(this.R, id.toString(), obj);
   }
 
-  query(pred?: Predicate<T>): T[] {
-    return query<T>(this.R, this.namespace, pred);
+  query(pred?: Predicate<E>): E[] {
+    return query<E>(this.R, this.namespace, pred);
   }
 
-  remove(obj: Partial<T>): T | undefined {
+  remove(obj: Partial<E>): E | undefined {
     const id = this.id(obj);
-    return remove<T>(this.R, id.toString());
+    return remove<E>(this.R, id.toString());
   }
 
-  removeAll(pred?: Predicate<T>): T[] {
-    return removeAll<T>(this.R, this.namespace, pred);
+  removeAll(pred?: Predicate<E>): E[] {
+    return removeAll<E>(this.R, this.namespace, pred);
   }
 
-  related(obj: Partial<T>): any {
-    return related<T>(this.R, obj);
+  related(obj: Partial<E>): ER {
+    return related<E, ER>(this.R, obj);
   }
 }
 
-type Predicate<T> =
-  | Partial<T>
-  // | ((v: T, i: number, a: T[]) => boolean)
+type Predicate<E> =
+  | Partial<E>
+  // | ((v: E, i: number, a: E[]) => boolean)
   | ArrayFilterFnParams;
 
-export function create<T extends Entity>(
+export function create<E extends Entity>(
   R: Repository,
   partialId: string,
-  obj: Partial<T>,
-): T {
+  obj: Partial<E>,
+): E {
   let id = new EntityId(partialId);
   id.ref ||= uid.rnd();
   obj.id = id.toString();
   R[id.namespace] ??= {};
   R[id.namespace][id.ref] = obj;
-  return obj as T;
+  return obj as E;
 }
 
-export function get<T extends Entity>(
+export function get<E extends Entity>(
   R: Repository,
   id: string,
-): T | undefined {
+): E | undefined {
   let { namespace, ref } = new EntityId(id);
   if (namespace in R) {
     return R[namespace][ref];
   }
 }
 
-export function getOrCreate<T extends Entity>(
+export function getOrCreate<E extends Entity>(
   R: Repository,
   id: string,
-  newObj: Partial<T>,
-): T | undefined {
-  let obj = get<T>(R, id);
+  newObj: Partial<E>,
+): E | undefined {
+  let obj = get<E>(R, id);
   if (typeof obj === "undefined") {
-    obj = create<T>(R, id, newObj);
+    obj = create<E>(R, id, newObj);
   }
   return obj;
 }
@@ -144,14 +146,14 @@ type ArrayFilterFnParams = Parameters<typeof Array.prototype.filter>[0];
  * @param pred Either a set of attributes to match, or a function for Array.prototype.filter
  * @returns A list of items
  */
-export function query<T extends Entity>(
+export function query<E extends Entity>(
   R: Repository,
   namespace: string,
-  pred?: Predicate<T>,
-): T[] {
-  let objects: T[] = [];
+  pred?: Predicate<E>,
+): E[] {
+  let objects: E[] = [];
   if (namespace in R) {
-    objects = Object.values<T>(R[namespace]);
+    objects = Object.values<E>(R[namespace]);
     let filterFn: ArrayFilterFnParams;
     if (typeof pred === "object") {
       filterFn = (entity) => {
@@ -172,10 +174,10 @@ export function query<T extends Entity>(
   return objects;
 }
 
-export function remove<T extends Entity>(
+export function remove<E extends Entity>(
   R: Repository,
   id: string,
-): T | undefined {
+): E | undefined {
   let { namespace, ref } = new EntityId(id);
   if (namespace in R && ref in R[namespace]) {
     const obj = R[namespace][ref];
@@ -184,12 +186,12 @@ export function remove<T extends Entity>(
   }
 }
 
-export function removeAll<T extends Entity>(
+export function removeAll<E extends Entity>(
   R: Repository,
   namespace: string,
-  pred?: Predicate<T>,
-): T[] {
-  const objs = query<T>(R, namespace, pred);
+  pred?: Predicate<E>,
+): E[] {
+  const objs = query<E>(R, namespace, pred);
   for (const obj of objs) {
     let { namespace, ref } = new EntityId(obj.id);
     delete R[namespace][ref];
@@ -197,11 +199,14 @@ export function removeAll<T extends Entity>(
   return objs;
 }
 
-export function related<T extends Entity>(R: Repository, obj: Partial<T>): any {
+export function related<E extends Entity, ER extends any>(
+  R: Repository,
+  obj: Partial<E>,
+): ER {
   return Object.entries(obj).reduce((rel, [key, value]) => {
     if (key.endsWith("Id") && value.indexOf(ID_SEPARATOR) >= 0) {
       rel[key] = get(this.R, value);
     }
     return [key, rel[key]];
-  }, {});
+  }, {}) as ER;
 }

@@ -1,4 +1,3 @@
-import { create } from "@engine/repository";
 import { fillArray, padArray } from "@engine/utils/array";
 import { randomChoice, randomInt } from "@engine/utils/random";
 import { titleize } from "@engine/utils/string";
@@ -6,11 +5,15 @@ import { randomSpeciesColorSet } from "@icons/species";
 import type { Ctx } from "boardgame.io";
 import type { RandomAPI } from "boardgame.io/src/plugins/random/random";
 import { human, species } from "fantastical";
-import { getPlayerBandId, type Band } from "./entities/bands";
-import { Race, type Character } from "./entities/character";
-import { ItemFactory } from "./entities/item";
+import { Bands } from "./entities/bands";
+import { Characters, Race } from "./entities/character";
+import { ItemFactory, Items } from "./entities/item";
 import type { Location } from "./entities/location";
-import { LocationTypeMap, type LocationType } from "./entities/location";
+import {
+  LocationTypeMap,
+  Locations,
+  type LocationType,
+} from "./entities/location";
 import { TurnLogs } from "./entities/log";
 import { Maps, getWorldMapRef, type Point } from "./entities/map";
 import { Regions } from "./entities/region";
@@ -22,7 +25,7 @@ export function setupG(
 ): GameState {
   const G = {} as GameState;
   //---
-  const items = new ItemFactory(G, "items");
+  const itemFactory = new ItemFactory(new Items(G));
   // World map
   const world = {
     WIDTH: 3,
@@ -70,7 +73,7 @@ export function setupG(
   while (locationTypePool.length > 0) {
     const type = locationTypePool.pop();
     if (type) {
-      const location = create<Location>(G, "locations", {
+      const location = new Locations(G).create({
         cell: cells[locationIndex % cells.length],
         typeId: type.id,
       });
@@ -85,7 +88,7 @@ export function setupG(
   for (let nPlayer = 0; nPlayer < ctx.numPlayers; nPlayer++) {
     const playerId = nPlayer.toString();
     const location = randomChoice<Location>(towns, random.Number);
-    const band = create<Band>(G, getPlayerBandId(playerId), {
+    const band = new Bands(G).create({
       playerId: playerId.toString(),
       cell: location.cell,
     });
@@ -122,23 +125,23 @@ export function setupG(
       };
       switch (race) {
         case Race.Human:
-          equipment.primary = items.Sword({ bandId }).id;
-          equipment.secondary = items.Bow({ bandId }).id;
+          equipment.primary = itemFactory.Sword({ bandId }).id;
+          equipment.secondary = itemFactory.Bow({ bandId }).id;
           attrs[randomChoice(["str", "dex", "int"], random.Number)] += 1;
           break;
         case Race.Elf:
-          equipment.primary = items.Sword({ bandId }).id;
-          equipment.secondary = items.Bow({ bandId }).id;
+          equipment.primary = itemFactory.Sword({ bandId }).id;
+          equipment.secondary = itemFactory.Bow({ bandId }).id;
           attrs.mag = 1;
           break;
         case Race.Dwarf:
-          equipment.primary = items.Axe({ bandId }).id;
-          equipment.shield = items.Shield({ bandId }).id;
+          equipment.primary = itemFactory.Axe({ bandId }).id;
+          equipment.shield = itemFactory.Shield({ bandId }).id;
           attrs.str += 2;
           attrs.int -= 1;
           break;
       }
-      create<Character>(G, "characters", {
+      new Characters(G).create({
         bandId: band.id,
         locationId: location.id,
         name,
@@ -150,10 +153,10 @@ export function setupG(
       });
     }
 
-    items.PaddedJacket({ bandId });
-    items.Ring({ bandId });
+    itemFactory.PaddedJacket({ bandId });
+    itemFactory.Ring({ bandId });
     for (let i = 0; i < 3; i++) {
-      items.Kingsfoil({ bandId });
+      itemFactory.Kingsfoil({ bandId });
     }
   }
 

@@ -1,8 +1,8 @@
-import { get, query } from "@engine/repository";
+import { EntityManager } from "@engine/repository";
 import type { SimpleState } from "@engine/state";
 import type { Equipment } from "../equipment";
 import type { Band } from "./bands";
-import { getCurrentBandId } from "./bands";
+import { getCurrentBand } from "./bands";
 import type { VisualEntity } from "./base";
 import type { Location } from "./location";
 
@@ -25,11 +25,18 @@ export interface Character extends VisualEntity {
   skills: [];
 }
 
+export interface CharacterRelations {
+  band: Band;
+  location: Location;
+}
+
 export function power(char: Character) {
   return char.str + char.dex + char.int + char.mag;
 }
 
 export function getCurrentBandMembers({ G, ctx }: SimpleState): Character[] {
-  const band = get<Band>(G, getCurrentBandId(ctx));
-  return query<Character>(G, "characters", { bandId: band.id });
+  const band = getCurrentBand({ G, ctx });
+  return new Characters(G).query({ bandId: band.id });
 }
+
+export class Characters extends EntityManager<Character, CharacterRelations> {}

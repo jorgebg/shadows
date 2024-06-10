@@ -19,3 +19,8 @@ export class Regions extends EntityManager<Region> {
     }
   }
 }
+export const CardinalPointsGrid = [
+  ["North-West", "North", "North-East"],
+  ["West", "Center", "East"],
+  ["South-West", "South", "South-East"],
+];

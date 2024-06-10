@@ -1,4 +1,4 @@
-import { EntityId, type Entity } from "@engine/repository";
+import { EntityId, EntityManager, type Entity } from "@engine/repository";
 import type { UIElement } from "@game/ui";
 import type { Character } from "./character";
 import type { Location } from "./location";
@@ -34,7 +34,25 @@ export interface Task extends Entity {
   characterId: Character["id"];
   locationId: Location["id"];
 }
-export function getTaskId(character: Character): Task["id"] {
-  const charRef = new EntityId(character.id).ref;
-  return `tasks#${charRef}`;
+
+export interface TaskRelations {
+  type: TaskType;
+  character: Character;
+  location: Location;
+}
+
+export class Tasks extends EntityManager<Task, TaskRelations> {
+  ref(task) {
+    if (task.characterId) {
+      const id = new EntityId(task.characterId);
+      return id.ref;
+    }
+  }
+  related(task: Task) {
+    const related = super.related(task);
+    if (task.typeId) {
+      related.type = TaskTypeMap[task.typeId];
+    }
+    return related;
+  }
 }

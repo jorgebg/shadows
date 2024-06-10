@@ -1,3 +1,4 @@
+import { EntityManager } from "@engine/repository";
 import type { Band } from "./bands";
 import { Factory, type VisualEntity } from "./base";
 
@@ -6,6 +7,10 @@ export type ItemType = "weapon" | "shield" | "armor" | "amulet" | "consumable";
 export interface Item extends VisualEntity {
   type: ItemType;
   bandId: Band["id"];
+}
+
+export interface ItemRelations {
+  band: Band;
 }
 
 export class ItemFactory extends Factory<Item> {
@@ -66,3 +71,5 @@ export class ItemFactory extends Factory<Item> {
     });
   }
 }
+
+export class Items extends EntityManager<Item, ItemRelations> {}

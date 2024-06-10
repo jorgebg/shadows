@@ -1,5 +1,4 @@
 import { confirm, type Option } from "@engine/options";
-import { get, query } from "@engine/repository";
 import { titleize } from "@engine/utils/string";
 import type { Ctx } from "boardgame.io";
 import BandScreen from "./components/BandScreen.svelte";
@@ -8,12 +7,8 @@ import PlanScreen from "./components/PlanScreen.svelte";
 import TravelScreen from "./components/TravelScreen.svelte";
 import { getCurrentBand } from "./entities/bands";
 import { getCurrentBandMembers, power } from "./entities/character";
-import type { Item } from "./entities/item";
-import {
-  getCellIcons,
-  LocationTypeMap,
-  type Location,
-} from "./entities/location";
+import { Items } from "./entities/item";
+import { getCellIcons, Locations } from "./entities/location";
 import { TurnLogs } from "./entities/log";
 import { Regions } from "./entities/region";
 import { TaskTypeMap } from "./entities/task";
@@ -43,23 +38,21 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         icon: "map",
         component: PlanScreen,
         children: [
-          ...query<Location>(G, "locations", { cell: band.cell }).map(
-            (location) => ({
-              ...LocationTypeMap[location.typeId],
-              code: "plan",
-              args: { location },
-              children: Object.values(TaskTypeMap).map((task) => ({
-                code: task.id,
-                description: task.description,
-                icon: task.icon,
-                args: { task },
-                children: getCurrentBandMembers(state).map((member) => ({
-                  args: { member },
-                  move: AssignTask,
-                })),
+          ...new Locations(G).query({ cell: band.cell }).map((location) => ({
+            ...new Locations(G).related(location).type,
+            code: "plan",
+            args: { location },
+            children: Object.values(TaskTypeMap).map((task) => ({
+              code: task.id,
+              description: task.description,
+              icon: task.icon,
+              args: { task },
+              children: getCurrentBandMembers(state).map((member) => ({
+                args: { member },
+                move: AssignTask,
               })),
-            }),
-          ),
+            })),
+          })),
           confirm({
             code: "start",
             icon: { name: "start", color: "yellow" },
@@ -96,12 +89,12 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         children: getCurrentBandMembers(state).map((member) => ({
           code: "select_member",
           name: member.name,
-          description: `${titleize(member.race)}, Power ${power(member)}, ${
+          description: `${titleize(member.race)} (${power(member)}) [${
             Object.values(member.equipment)
-              .filter((i) => i)
-              .map((i) => get<Item>(G, i).name)
+              .filter((id) => !!id)
+              .map((id) => new Items(G).get({ id }).name)
               .join(", ") || "no equipment"
-          }`,
+          }]`,
           icon: member.icon,
           args: { member },
           children: [
@@ -112,13 +105,15 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
               children: EquipmentSlotList.map((slot) => ({
                 ...slot,
                 icon:
-                  get<Item>(G, member.equipment[slot.id])?.icon || slot.icon,
+                  new Items(G).get({ id: member.equipment[slot.id] })?.icon ||
+                  slot.icon,
                 name: slot.name,
                 args: { slot },
                 description:
-                  get<Item>(G, member.equipment[slot.id])?.name || "<empty>",
+                  new Items(G).get({ id: member.equipment[slot.id] })?.name ||
+                  "<empty>",
                 children: [
-                  ...(get<Item>(G, member.equipment[slot.id])
+                  ...(new Items(G).get({ id: member.equipment[slot.id] })
                     ? [
                         {
                           code: "unequip",
@@ -127,19 +122,19 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
                         },
                       ]
                     : []),
-                  ...query<Item>(
-                    G,
-                    "items",
-                    (item) =>
-                      item.bandId == band.id &&
-                      item.type == slot.type &&
-                      equipped(getCurrentBandMembers(state), item.id)?.id !=
-                        member.id,
-                  ).map((item) => ({
-                    icon: item.icon,
-                    args: { item },
-                    move: EquipItem,
-                  })),
+                  ...new Items(G)
+                    .query(
+                      (item) =>
+                        item.bandId == band.id &&
+                        item.type == slot.type &&
+                        equipped(getCurrentBandMembers(state), item.id)?.id !=
+                          member.id,
+                    )
+                    .map((item) => ({
+                      icon: item.icon,
+                      args: { item },
+                      move: EquipItem,
+                    })),
                 ],
               })),
             },
@@ -167,7 +162,8 @@ export function optionTree(state: { G: GameState; ctx: Ctx }): Option[] {
         description: "Use, equip or remove items",
         icon: "shelves",
         component: ItemsScreen,
-        children: query<Item>(G, "items", { bandId: band.id })
+        children: new Items(G)
+          .query({ bandId: band.id })
           .sort((item) => (item.type === "consumable" ? -1 : 1))
           .map((item) => ({
             code: "select_item",

@@ -1,16 +1,10 @@
 import { Move } from "@engine/moves";
-import {
-  create,
-  get,
-  query,
-  remove,
-  removeAll,
-  type Entity,
-} from "@engine/repository";
+import { remove, type Entity } from "@engine/repository";
 import type { State } from "@engine/state";
 import { repr } from "@engine/utils/string";
 import { getCurrentBand } from "@game/entities/bands";
 import {
+  Characters,
   getCurrentBandMembers,
   type Character,
 } from "@game/entities/character";
@@ -19,12 +13,7 @@ import { LocationTypeMap, type Location } from "@game/entities/location";
 import { TurnLogs } from "@game/entities/log";
 import { getWorldMap, travellable } from "@game/entities/map";
 import { getCurrentBandRegion, type Region } from "@game/entities/region";
-import {
-  TaskTypeMap,
-  getTaskId,
-  type Task,
-  type TaskType,
-} from "@game/entities/task";
+import { TaskTypeMap, Tasks, type TaskType } from "@game/entities/task";
 import { equipment, equipped, type EquipmentSlot } from "@game/equipment";
 import { type GameState } from "../state";
 
@@ -52,7 +41,7 @@ export class Travel extends Move<GameState> {
   declare args: { region: Region };
   commit(state, args) {
     getCurrentBand(state).cell = args.region.cell;
-    removeAll<Task>(state.G, "tasks");
+    new Tasks(state.G).removeAll();
     logMessage(state, `Travelled to ${args.region.name}`);
     endTurn(state);
   }
@@ -75,10 +64,9 @@ export class AssignTask extends Move<GameState> {
   commit(state, args) {
     const { G } = state;
     const { task, location, member } = args;
-    const taskId = getTaskId(member);
-    const locationType = LocationTypeMap[location.typeId];
     if (task && location) {
-      create<Task>(G, taskId, {
+      const locationType = LocationTypeMap[location.typeId];
+      new Tasks(G).create({
         typeId: task.id,
         locationId: location.id,
         characterId: member.id,
@@ -88,7 +76,7 @@ export class AssignTask extends Move<GameState> {
         `Assigned ${task.name} to ${member.name} in ${locationType.name}`,
       );
     } else {
-      const removed = remove<Task>(G, taskId);
+      const removed = new Tasks(G).remove({ characterId: member.id });
       const unassignedTask = TaskTypeMap[removed.typeId];
       logMessage(
         state,
@@ -109,8 +97,7 @@ export class AssignTask extends Move<GameState> {
   validate(state) {
     const { task, member } = this.args;
     return !(
-      task &&
-      query<Task>(state.G, "tasks", { characterId: member.id }).length > 0
+      task && new Tasks(state.G).query({ characterId: member.id }).length > 0
     );
   }
 }
@@ -134,7 +121,7 @@ export class EquipItem extends Move<GameState> {
   commit(state, args) {
     const { G, ctx } = state;
     const { item, member, slot } = args;
-    get<Character>(G, member.id).equipment[slot.id] = item.id;
+    new Characters(G).get({ id: member.id }).equipment[slot.id] = item.id;
     logGenericMove(state, this, args);
   }
 
@@ -165,7 +152,7 @@ export class UnequipItem extends Move<GameState> {
   commit(state, args) {
     const { G, ctx } = state;
     const { member, slot } = args;
-    get<Character>(G, member.id).equipment[slot.id] = null;
+    new Characters(G).get({ id: member.id }).equipment[slot.id] = null;
     logGenericMove(state, this, args);
   }
 
@@ -216,8 +203,8 @@ export class DisbandMember extends Move<GameState> {
   }
   commit(state, args) {
     const { member } = args;
-    remove(state.G, member.id);
-    remove(state.G, getTaskId(member));
+    new Characters(state.G).remove({ id: member.id });
+    new Tasks(state.G).remove({ characterId: member.id });
     logGenericMove(state, this, args);
   }
   validate(state) {
@@ -247,14 +234,11 @@ export class StartTasks extends Move<GameState> {
   commit(state, args) {
     const { G } = state;
     logMessage(state, `Starting plan`);
-    for (const task of query<Task>(G, "tasks")) {
-      const taskType = TaskTypeMap[task.typeId];
-      const member = get<Character>(G, task.characterId);
-      const location = get<Location>(G, task.locationId);
-      const locationType = LocationTypeMap[location.typeId];
+    for (const task of new Tasks(G).query()) {
+      const related = new Tasks(G).related(task);
       logMessage(
         state,
-        `${member.name} is performing ${taskType.name} in ${locationType.name}`,
+        `${related.character.name} is performing ${related.type.name} in ${related.location.name}`,
       );
     }
     endTurn(state);

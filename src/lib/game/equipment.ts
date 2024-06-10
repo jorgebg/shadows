@@ -1,8 +1,7 @@
-import { get } from "@engine/repository";
 import type { GameState } from "@game/state";
 import type { UIElement } from "@game/ui";
-import type { Character } from "./entities/character";
-import type { Item, ItemType } from "./entities/item";
+import { Characters, type Character } from "./entities/character";
+import { Items, type Item, type ItemType } from "./entities/item";
 
 export interface Equipment {
   primary: Item["id"];
@@ -67,8 +66,8 @@ export function equipment(
   member: Character,
   slot: EquipmentSlot,
 ): Item {
-  const itemId = get<Character>(G, member.id)?.equipment[slot.id];
+  const itemId = new Characters(G).get({ id: member.id })?.equipment[slot.id];
   if (typeof itemId !== undefined) {
-    return get<Item>(G, itemId);
+    return new Items(G).get(itemId);
   }
 }
