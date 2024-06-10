@@ -12,7 +12,7 @@ import { ItemFactory } from "./entities/item";
 import type { Location } from "./entities/location";
 import { LocationTypeMap, type LocationType } from "./entities/location";
 import { TurnLogs } from "./entities/log";
-import { getWorldMapId, type Map, type Point } from "./entities/map";
+import { Maps, getWorldMapRef, type Point } from "./entities/map";
 import { Regions } from "./entities/region";
 import { type GameState } from "./state";
 
@@ -28,7 +28,8 @@ export function setupG(
     WIDTH: 3,
     HEIGHT: 3,
   };
-  create<Map>(G, getWorldMapId(), {
+  new Maps(G).create({
+    id: getWorldMapRef(),
     size: { x: world.WIDTH, y: world.HEIGHT },
   });
   // Regions

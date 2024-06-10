@@ -21,12 +21,14 @@ export class EntityId implements LongFormId {
   public namespace: string;
   public ref: string;
 
-  constructor(id: string | LongFormId) {
-    if (typeof id === "object") {
-      this.namespace = id?.namespace;
-      this.ref = id?.ref;
-    } else {
-      [this.namespace, this.ref] = id.split(ID_SEPARATOR);
+  constructor(id?: string | LongFormId) {
+    if (typeof id !== "undefined") {
+      if (typeof id === "object") {
+        this.namespace = id?.namespace;
+        this.ref = id?.ref;
+      } else {
+        [this.namespace, this.ref] = id.split(ID_SEPARATOR);
+      }
     }
   }
 
@@ -50,14 +52,11 @@ export class EntityManager<T extends Entity> {
   }
 
   id(obj: Partial<T>): EntityId {
-    if ("id" in obj) {
-      return new EntityId(obj["id"]);
-    }
-    const ref = this.ref(obj);
-    if (ref) {
-      return new EntityId({ namespace: this.namespace, ref });
-    }
-    return new EntityId({ namespace: this.namespace, ref: undefined });
+    let id: EntityId;
+    id = new EntityId(obj["id"]);
+    id.namespace ||= this.namespace;
+    id.ref ||= this.ref(obj);
+    return id;
   }
 
   create(obj: Partial<T>): T {

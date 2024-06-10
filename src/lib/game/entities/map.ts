@@ -1,4 +1,4 @@
-import { get, type Entity } from "@engine/repository";
+import { EntityManager, type Entity } from "@engine/repository";
 import type { GameState } from "@game/state";
 import { DiagonalMovement, Grid } from "pathfinding";
 
@@ -18,9 +18,11 @@ export function travellable(map: Map, source: Point, target: Point) {
       .filter((n) => n.x == target.x && n.y == target.y).length > 0
   );
 }
-export function getWorldMapId() {
-  return "maps#world";
+export function getWorldMapRef() {
+  return "#world";
 }
 export function getWorldMap(G: GameState): Map {
-  return get<Map>(G, getWorldMapId());
+  return new Maps(G).get({ id: getWorldMapRef() });
 }
+
+export class Maps extends EntityManager<Map> {}
